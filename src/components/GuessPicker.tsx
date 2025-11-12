@@ -25,7 +25,7 @@ export function GuessPicker({
   return (
     <div className="flex flex-col items-center gap-8">
       <div className="text-center">
-        <h2 className="text-3xl font-bold text-white mb-4">
+        <h2 className="text-3xl font-bold text-[#1D0D52] mb-4">
           {TEXT.prompts.guessInstruction[language]}
         </h2>
       </div>
@@ -44,7 +44,7 @@ export function GuessPicker({
               }
               className={`px-6 py-4 rounded-lg font-medium text-lg transition-all ${
                 selectedSuit === suit.key
-                  ? "bg-white text-[#5CBFBE] shadow-lg scale-105"
+                  ? "bg-white text-[#1D0D52] shadow-lg scale-105"
                   : "bg-white/20 text-white hover:bg-white/30"
               }`}
             >
@@ -69,7 +69,7 @@ export function GuessPicker({
               }
               className={`px-5 py-3 rounded-lg font-medium text-lg transition-all ${
                 selectedValue === value.key
-                  ? "bg-white text-[#5CBFBE] shadow-lg scale-105"
+                  ? "bg-white text-[#1D0D52] shadow-lg scale-105"
                   : "bg-white/20 text-white hover:bg-white/30"
               }`}
             >
@@ -85,7 +85,7 @@ export function GuessPicker({
         disabled={!canSubmit}
         className={`px-8 py-4 rounded-lg font-bold text-xl transition-all ${
           canSubmit
-            ? "bg-white text-[#5CBFBE] hover:bg-gray-100 shadow-lg scale-105"
+            ? "bg-[#E376AD] text-white hover:bg-[#d65a99] shadow-lg scale-105"
             : "bg-white/20 text-white/50 cursor-not-allowed"
         }`}
       >

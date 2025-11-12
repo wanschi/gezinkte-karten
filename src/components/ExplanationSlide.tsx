@@ -14,9 +14,9 @@ export function ExplanationSlide({
   onContinue,
 }: ExplanationSlideProps) {
   return (
-    <div className="flex flex-col items-center gap-8 max-w-4xl mx-auto">
+    <div className="flex flex-col items-center justify-center min-h-screen gap-8 max-w-4xl mx-auto px-8 py-8">
       <div className="text-center">
-        <h2 className="text-4xl font-bold text-white mb-4">
+        <h2 className="text-4xl font-bold text-[#1D0D52] mb-4">
           {TEXT.prompts.explanationHeading[language]}
         </h2>
       </div>
@@ -36,7 +36,7 @@ export function ExplanationSlide({
 
       <button
         onClick={onContinue}
-        className="px-8 py-4 bg-white text-[#5CBFBE] rounded-lg font-bold text-xl hover:bg-gray-100 transition-colors shadow-lg"
+        className="px-8 py-4 bg-[#E376AD] text-white rounded-lg font-bold text-xl hover:bg-[#d65a99] transition-colors shadow-lg"
       >
         {TEXT.buttons.explanationContinue[language]}
       </button>

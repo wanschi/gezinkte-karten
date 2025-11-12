@@ -11,10 +11,10 @@ export function StartScreen({ language, onStart }: StartScreenProps) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8">
       <div className="text-center max-w-3xl">
-        <h1 className="text-6xl font-bold text-white mb-6">
+        <h1 className="text-6xl font-bold text-[#1D0D52] mb-6">
           {TEXT.start.title[language]}
         </h1>
-        <h2 className="text-3xl text-white mb-8">
+        <h2 className="text-3xl text-[#1D0D52] mb-8">
           {TEXT.start.subtitle[language]}
         </h2>
       </div>

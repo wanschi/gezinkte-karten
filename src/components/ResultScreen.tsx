@@ -25,7 +25,7 @@ export function ResultScreen({
   return (
     <div className="flex flex-col items-center gap-8">
       <div className="text-center">
-        <h2 className="text-4xl font-bold text-white mb-4">
+        <h2 className="text-4xl font-bold text-[#1D0D52] mb-4">
           {isCorrect
             ? TEXT.feedback.correct[language]
             : TEXT.feedback.incorrect[language]}
@@ -58,7 +58,7 @@ export function ResultScreen({
           <img
             src={markedCard.frontImage}
             alt={markedCard.name[language]}
-            className="w-48 h-68 object-contain rounded-lg shadow-lg"
+            className="w-48 h-auto max-h-96 object-contain rounded-lg shadow-lg"
           />
           <p className="text-white text-lg font-medium">
             {markedCard.name[language]}

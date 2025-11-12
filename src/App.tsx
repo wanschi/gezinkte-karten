@@ -112,7 +112,7 @@ function App() {
         return (
           <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-white mb-4">
+              <h2 className="text-3xl font-bold text-[#1D0D52] mb-4">
                 {isSubRoundAValue
                   ? TEXT.prompts.findMarkedCard[state.language]
                   : TEXT.prompts.doubleQuestion[state.language]}
@@ -124,14 +124,17 @@ function App() {
               onCardSelect={handleCardSelect}
               showBacks={true}
             />
-            {state.selectedCardId && (
-              <button
-                onClick={handleConfirmSelection}
-                className="px-8 py-4 bg-white text-[#5CBFBE] rounded-lg font-bold text-xl hover:bg-gray-100 transition-colors shadow-lg"
-              >
-                {TEXT.buttons.next[state.language]}
-              </button>
-            )}
+            {/* Reserve space for button to prevent layout jump */}
+            <div className="h-20 flex items-center justify-center min-h-[80px]">
+              {state.selectedCardId && (
+                <button
+                  onClick={handleConfirmSelection}
+                  className="px-8 py-4 bg-[#E376AD] text-white rounded-lg font-bold text-xl hover:bg-[#d65a99] transition-colors shadow-lg"
+                >
+                  {TEXT.buttons.next[state.language]}
+                </button>
+              )}
+            </div>
           </div>
         );
       }
@@ -148,9 +151,9 @@ function App() {
           : null;
 
         return (
-          <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8">
+          <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8 py-8">
             <div className="text-center">
-              <h2 className="text-4xl font-bold text-white mb-4">
+              <h2 className="text-4xl font-bold text-[#1D0D52] mb-4">
                 {isCorrect
                   ? TEXT.feedback.correct[state.language]
                   : TEXT.feedback.incorrect[state.language]}
@@ -176,7 +179,7 @@ function App() {
                 <img
                   src={roundDef.marked.backImage}
                   alt={roundDef.marked.name[state.language]}
-                  className="w-48 h-68 object-contain rounded-lg shadow-lg"
+                  className="w-48 h-auto max-h-96 object-contain rounded-lg shadow-lg"
                 />
               </div>
             </div>
@@ -217,13 +220,13 @@ function App() {
           : null;
 
         return (
-          <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8">
+          <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8 py-8">
             {selectedCardImage && (
-              <div className="flex flex-col items-center gap-4 mb-4">
+              <div className="flex flex-col items-center gap-4">
                 <img
                   src={selectedCardImage}
                   alt="Selected card"
-                  className="w-48 h-68 object-contain rounded-lg shadow-lg"
+                  className="w-48 h-auto max-h-96 object-contain rounded-lg shadow-lg"
                 />
               </div>
             )}
@@ -266,7 +269,7 @@ function App() {
             : null;
 
         return (
-          <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8">
+          <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8 py-8">
             <ResultScreen
               language={state.language}
               isCorrect={isCorrect}
@@ -316,10 +319,12 @@ function App() {
           <RestartButton language={state.language} onRestart={handleRestart} />
         </>
       )}
-      <LanguageSwitch
-        language={state.language}
-        onLanguageChange={handleLanguageChange}
-      />
+      {state.view === "start" && (
+        <LanguageSwitch
+          language={state.language}
+          onLanguageChange={handleLanguageChange}
+        />
+      )}
       {renderView()}
     </div>
   );
