@@ -1,32 +1,314 @@
-import { useState } from "react";
-import illustration from "./assets/cards.png";
+import { useReducer, useEffect } from "react";
 import "./App.css";
-import { Button } from "./components";
+import {
+  StartScreen,
+  RoundIndicator,
+  LanguageSwitch,
+  RestartButton,
+  CardGrid,
+  GuessPicker,
+  ResultScreen,
+  ExplanationSlide,
+  CompletedScreen,
+} from "./components";
+import {
+  gameReducer,
+  initialState,
+  getCardsForRound,
+  getRoundDefForRound,
+} from "./gameState";
+import { SUIT_META, VALUE_META } from "./gameData";
+import type { SuitKey, ValueKey } from "./gameData";
+import { TEXT } from "./i18n";
+import { isSubRoundA } from "./gameState";
 
 function App() {
-  const [_count, _setCount] = useState(0);
+  const [state, dispatch] = useReducer(gameReducer, initialState);
+
+  // Inactivity timer - reset after 60 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const timeSinceActivity = now - state.lastActivityTime;
+      const INACTIVITY_TIMEOUT = 60 * 1000; // 60 seconds
+
+      if (timeSinceActivity > INACTIVITY_TIMEOUT && state.view !== "start") {
+        dispatch({ type: "RESTART_GAME" });
+      }
+    }, 1000); // Check every second
+
+    return () => clearInterval(interval);
+  }, [state.lastActivityTime, state.view]);
+
+  // Track user activity
+  useEffect(() => {
+    const handleActivity = () => {
+      dispatch({ type: "UPDATE_ACTIVITY" });
+    };
+
+    window.addEventListener("pointerdown", handleActivity);
+    window.addEventListener("keydown", handleActivity);
+    window.addEventListener("touchstart", handleActivity);
+
+    return () => {
+      window.removeEventListener("pointerdown", handleActivity);
+      window.removeEventListener("keydown", handleActivity);
+      window.removeEventListener("touchstart", handleActivity);
+    };
+  }, []);
+
+  const handleLanguageChange = (language: "de" | "en") => {
+    dispatch({ type: "SET_LANGUAGE", language });
+  };
+
+  const handleStart = () => {
+    dispatch({ type: "START_GAME" });
+  };
+
+  const handleRestart = () => {
+    dispatch({ type: "RESTART_GAME" });
+  };
+
+  const handleCardSelect = (cardId: string) => {
+    dispatch({ type: "SELECT_CARD", cardId });
+  };
+
+  const handleConfirmSelection = () => {
+    dispatch({ type: "CONFIRM_SELECTION" });
+  };
+
+  const handleContinueAfterReveal = () => {
+    dispatch({ type: "CONTINUE_AFTER_REVEAL" });
+  };
+
+  const handleContinueAfterExplanation = () => {
+    dispatch({ type: "CONTINUE_AFTER_EXPLANATION" });
+  };
+
+  const handleSetGuess = (suit: SuitKey | null, value: ValueKey | null) => {
+    dispatch({ type: "SET_GUESS", suit, value });
+  };
+
+  const handleConfirmGuess = () => {
+    dispatch({ type: "CONFIRM_GUESS" });
+  };
+
+  const handleContinueAfterGuessReveal = () => {
+    dispatch({ type: "CONTINUE_AFTER_GUESS_REVEAL" });
+  };
+
+  // Render based on current view
+  const renderView = () => {
+    switch (state.view) {
+      case "start":
+        return <StartScreen language={state.language} onStart={handleStart} />;
+
+      case "round-select-back": {
+        const cards = getCardsForRound(state.currentRound);
+        const isSubRoundAValue = isSubRoundA(state.currentRound);
+        return (
+          <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-white mb-4">
+                {isSubRoundAValue
+                  ? TEXT.prompts.findMarkedCard[state.language]
+                  : TEXT.prompts.doubleQuestion[state.language]}
+              </h2>
+            </div>
+            <CardGrid
+              cards={cards.all}
+              selectedCardId={state.selectedCardId}
+              onCardSelect={handleCardSelect}
+              showBacks={true}
+            />
+            {state.selectedCardId && (
+              <button
+                onClick={handleConfirmSelection}
+                className="px-8 py-4 bg-white text-[#5CBFBE] rounded-lg font-bold text-xl hover:bg-gray-100 transition-colors shadow-lg"
+              >
+                {TEXT.buttons.next[state.language]}
+              </button>
+            )}
+          </div>
+        );
+      }
+
+      case "round-reveal-back": {
+        const roundDef = getRoundDefForRound(state.currentRound);
+        const cards = getCardsForRound(state.currentRound);
+        const isCorrect = state.selectedCardId === roundDef.marked.id;
+        const selectedCard = state.selectedCardId
+          ? cards.all.find((c) => c.id === state.selectedCardId)
+          : null;
+
+        return (
+          <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8">
+            <div className="text-center">
+              <h2 className="text-4xl font-bold text-white mb-4">
+                {isCorrect
+                  ? TEXT.feedback.correct[state.language]
+                  : TEXT.feedback.incorrect[state.language]}
+              </h2>
+            </div>
+            <div className="flex gap-8 items-center flex-wrap justify-center">
+              {selectedCard && (
+                <div className="flex flex-col items-center gap-4">
+                  <p className="text-white text-xl font-medium">
+                    {TEXT.feedback.yourChoice[state.language]}
+                  </p>
+                  <img
+                    src={selectedCard.backImage}
+                    alt="Selected card"
+                    className="w-48 h-auto max-h-96 object-contain rounded-lg shadow-lg"
+                  />
+                </div>
+              )}
+              <div className="flex flex-col items-center gap-4">
+                <p className="text-white text-xl font-medium">
+                  {TEXT.feedback.actualMarkedCard[state.language]}
+                </p>
+                <img
+                  src={roundDef.marked.backImage}
+                  alt={roundDef.marked.name[state.language]}
+                  className="w-48 h-68 object-contain rounded-lg shadow-lg"
+                />
+              </div>
+            </div>
+            <button
+              onClick={handleContinueAfterReveal}
+              className="px-8 py-4 bg-white text-[#5CBFBE] rounded-lg font-bold text-xl hover:bg-gray-100 transition-colors shadow-lg"
+            >
+              {TEXT.buttons.next[state.language]}
+            </button>
+          </div>
+        );
+      }
+
+      case "round-explanation": {
+        const roundDef = getRoundDefForRound(state.currentRound);
+        return (
+          <ExplanationSlide
+            language={state.language}
+            markedCard={roundDef.marked}
+            onContinue={handleContinueAfterExplanation}
+          />
+        );
+      }
+
+      case "round-guess-card": {
+        const cards = getCardsForRound(state.currentRound);
+        const selectedCard = state.selectedCardForGuess
+          ? cards.all.find((c) => c.id === state.selectedCardForGuess)
+          : null;
+
+        const selectedCardImage = selectedCard
+          ? "frontImage" in selectedCard
+            ? selectedCard.frontImage
+            : selectedCard.backImage
+          : null;
+
+        return (
+          <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8">
+            {selectedCardImage && (
+              <div className="flex flex-col items-center gap-4 mb-4">
+                <img
+                  src={selectedCardImage}
+                  alt="Selected card"
+                  className="w-48 h-68 object-contain rounded-lg shadow-lg"
+                />
+              </div>
+            )}
+            <GuessPicker
+              language={state.language}
+              selectedSuit={state.guess?.suit || null}
+              selectedValue={state.guess?.value || null}
+              onSuitChange={(suit) =>
+                handleSetGuess(suit, state.guess?.value || null)
+              }
+              onValueChange={(value) =>
+                handleSetGuess(state.guess?.suit || null, value)
+              }
+              onSubmit={handleConfirmGuess}
+            />
+          </div>
+        );
+      }
+
+      case "round-reveal-guess": {
+        const roundDef = getRoundDefForRound(state.currentRound);
+        const cards = getCardsForRound(state.currentRound);
+        const selectedCard = state.selectedCardForGuess
+          ? cards.all.find((c) => c.id === state.selectedCardForGuess)
+          : null;
+        const isCorrect =
+          state.selectedCardForGuess === roundDef.marked.id &&
+          state.guess?.suit === roundDef.marked.suit &&
+          state.guess?.value === roundDef.marked.value;
+
+        const guessLabel =
+          state.guess && state.guess.suit && state.guess.value
+            ? {
+                suit: SUIT_META[state.guess.suit].labels[state.language],
+                value: VALUE_META[state.guess.value].labels[state.language],
+              }
+            : null;
+
+        return (
+          <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8">
+            <ResultScreen
+              language={state.language}
+              isCorrect={isCorrect}
+              markedCard={roundDef.marked}
+              selectedCardId={state.selectedCardForGuess}
+              selectedCardImage={
+                selectedCard
+                  ? "frontImage" in selectedCard
+                    ? selectedCard.frontImage
+                    : selectedCard.backImage
+                  : null
+              }
+              guess={guessLabel}
+            />
+            <button
+              onClick={handleContinueAfterGuessReveal}
+              className="px-8 py-4 bg-white text-[#5CBFBE] rounded-lg font-bold text-xl hover:bg-gray-100 transition-colors shadow-lg"
+            >
+              {TEXT.buttons.next[state.language]}
+            </button>
+          </div>
+        );
+      }
+
+      case "completed":
+        return (
+          <CompletedScreen
+            language={state.language}
+            results={state.results}
+            onRestart={handleRestart}
+          />
+        );
+
+      default:
+        return null;
+    }
+  };
 
   return (
-    <div className="flex flex-row items-center justify-center">
-      <div>
-        <img
-          src={illustration}
-          className="logo react"
-          alt="React logo"
-          width={"664.48px"}
-          // width={664.48}
-          // height={784.59}
-        />
-      </div>
-      <div className="text-left ml-20 pr-60">
-        <h1 className="text-5xl font-bold mb-4">
-          Entdecke, was anderen verborgen bleibt
-        </h1>
-        <h2 className="text-2xl mb-4">
-          Kannst du die gezinkten Karten finden?
-        </h2>
-        <Button size="large">Los geht's!</Button>
-      </div>
+    <div className="min-h-screen bg-[#5CBFBE] relative">
+      {state.view !== "start" && state.view !== "completed" && (
+        <>
+          <RoundIndicator
+            round={state.currentRound}
+            language={state.language}
+          />
+          <RestartButton language={state.language} onRestart={handleRestart} />
+        </>
+      )}
+      <LanguageSwitch
+        language={state.language}
+        onLanguageChange={handleLanguageChange}
+      />
+      {renderView()}
     </div>
   );
 }

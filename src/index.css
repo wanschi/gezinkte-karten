@@ -40,10 +40,16 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Ensure touch targets are large enough for tablets */
+button {
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
 }
 
 h1 {
