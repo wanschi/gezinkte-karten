@@ -32,6 +32,7 @@
 .button--primary {
   background-color: #E376AD;
   color: white;
+  font-weight: bold;
 }
 
 .button--primary:hover:not(:disabled) {

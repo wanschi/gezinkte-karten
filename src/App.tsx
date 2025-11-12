@@ -3,13 +3,13 @@ import "./App.css";
 import {
   StartScreen,
   RoundIndicator,
-  LanguageSwitch,
   RestartButton,
   CardGrid,
   GuessPicker,
   ResultScreen,
   ExplanationSlide,
   CompletedScreen,
+  Button,
 } from "./components";
 import {
   gameReducer,
@@ -101,7 +101,13 @@ function App() {
   const renderView = () => {
     switch (state.view) {
       case "start":
-        return <StartScreen language={state.language} onStart={handleStart} />;
+        return (
+          <StartScreen
+            language={state.language}
+            onStart={handleStart}
+            onLanguageChange={handleLanguageChange}
+          />
+        );
 
       case "round-select-back": {
         const cards = getCardsForRound(
@@ -127,12 +133,13 @@ function App() {
             {/* Reserve space for button to prevent layout jump */}
             <div className="h-20 flex items-center justify-center min-h-[80px]">
               {state.selectedCardId && (
-                <button
+                <Button
+                  variant="primary"
+                  size="large"
                   onClick={handleConfirmSelection}
-                  className="px-8 py-4 bg-[#E376AD] text-white rounded-lg font-bold text-xl hover:bg-[#d65a99] transition-colors shadow-lg"
                 >
                   {TEXT.buttons.next[state.language]}
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -183,12 +190,13 @@ function App() {
                 />
               </div>
             </div>
-            <button
+            <Button
+              variant="primary"
+              size="large"
               onClick={handleContinueAfterReveal}
-              className="px-8 py-4 bg-white text-[#5CBFBE] rounded-lg font-bold text-xl hover:bg-gray-100 transition-colors shadow-lg"
             >
               {TEXT.buttons.next[state.language]}
-            </button>
+            </Button>
           </div>
         );
       }
@@ -284,12 +292,13 @@ function App() {
               }
               guess={guessLabel}
             />
-            <button
+            <Button
+              variant="primary"
+              size="large"
               onClick={handleContinueAfterGuessReveal}
-              className="px-8 py-4 bg-white text-[#5CBFBE] rounded-lg font-bold text-xl hover:bg-gray-100 transition-colors shadow-lg"
             >
               {TEXT.buttons.next[state.language]}
-            </button>
+            </Button>
           </div>
         );
       }
@@ -318,12 +327,6 @@ function App() {
           />
           <RestartButton language={state.language} onRestart={handleRestart} />
         </>
-      )}
-      {state.view === "start" && (
-        <LanguageSwitch
-          language={state.language}
-          onLanguageChange={handleLanguageChange}
-        />
       )}
       {renderView()}
     </div>

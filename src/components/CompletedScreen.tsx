@@ -20,10 +20,10 @@ export function CompletedScreen({
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8">
       <div className="text-center max-w-3xl">
-        <h1 className="text-5xl font-bold text-[#1D0D52] mb-6">
+        <h1 className="text-5xl font-bold text-white mb-6">
           {TEXT.prompts.summaryHeading[language]}
         </h1>
-        <p className="text-3xl text-[#1D0D52] mb-8">
+        <p className="text-3xl text-white mb-8">
           {formatScoreSummary(language, correctCount, totalCount)}
         </p>
       </div>
@@ -34,4 +34,3 @@ export function CompletedScreen({
     </div>
   );
 }
-

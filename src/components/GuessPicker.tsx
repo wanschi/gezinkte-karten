@@ -2,6 +2,7 @@ import type { Language } from "../i18n";
 import type { SuitKey, ValueKey } from "../gameData";
 import { SUIT_OPTIONS, VALUE_OPTIONS } from "../gameData";
 import { TEXT } from "../i18n";
+import { Button } from "./Button";
 
 interface GuessPickerProps {
   language: Language;
@@ -80,17 +81,14 @@ export function GuessPicker({
       </div>
 
       {/* Submit Button */}
-      <button
+      <Button
+        variant="primary"
+        size="large"
         onClick={onSubmit}
         disabled={!canSubmit}
-        className={`px-8 py-4 rounded-lg font-bold text-xl transition-all ${
-          canSubmit
-            ? "bg-[#E376AD] text-white hover:bg-[#d65a99] shadow-lg scale-105"
-            : "bg-white/20 text-white/50 cursor-not-allowed"
-        }`}
       >
         {TEXT.buttons.guessConfirm[language]}
-      </button>
+      </Button>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import type { Language } from "../i18n";
 import type { MarkedCardDefinition } from "../gameData";
 import { TEXT } from "../i18n";
+import { Button } from "./Button";
 
 interface ExplanationSlideProps {
   language: Language;
@@ -34,12 +35,13 @@ export function ExplanationSlide({
         </div>
       </div>
 
-      <button
+      <Button
+        variant="primary"
+        size="large"
         onClick={onContinue}
-        className="px-8 py-4 bg-[#E376AD] text-white rounded-lg font-bold text-xl hover:bg-[#d65a99] transition-colors shadow-lg"
       >
         {TEXT.buttons.explanationContinue[language]}
-      </button>
+      </Button>
     </div>
   );
 }

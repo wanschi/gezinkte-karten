@@ -14,7 +14,7 @@ export function CardGrid({
   showBacks = true,
 }: CardGridProps) {
   return (
-    <div className="flex gap-6 justify-center items-center flex-wrap">
+    <div className="flex gap-8 justify-center items-center flex-wrap">
       {cards.map((card) => {
         const isSelected = selectedCardId === card.id;
         const imageSrc = showBacks
@@ -36,7 +36,7 @@ export function CardGrid({
             <img
               src={imageSrc}
               alt={card.id}
-              className="w-48 h-auto max-h-96 object-contain rounded-xl"
+              className="w-[275px] h-auto max-h-[550px] object-contain rounded-xl"
               onError={(e) => {
                 console.error(`Failed to load image: ${imageSrc}`, e);
                 // Fallback: try to reload or show error

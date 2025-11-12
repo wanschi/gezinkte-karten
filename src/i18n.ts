@@ -73,8 +73,8 @@ export const TEXT = {
       en: "Confirm guess",
     },
     explanationContinue: {
-      de: "Weiter zur nächsten Aufgabe",
-      en: "Continue to next task",
+      de: "Weiter zum nächsten Deck",
+      en: "Continue to next deck",
     },
   },
   feedback: {
@@ -105,6 +105,52 @@ export const TEXT = {
     totalScore: {
       de: "Du hast {correct} von {total} richtig erkannt.",
       en: "You identified {correct} out of {total} correctly.",
+    },
+  },
+  completion: {
+    score0: {
+      de: "0 von 10 – nur ein Narr lässt sich mit gezinkten Karten hinters Licht führen.",
+      en: "0 out of ten – only a fool lets himself be fooled by marked cards.",
+    },
+    score1: {
+      de: "1 von 10 – mit etwas Übung wirst auch Du zum Ass.",
+      en: "1 out of ten – with some practice, you'll become an Ace too.",
+    },
+    score2: {
+      de: "2 von 10 – Dein Blick erkennt erste Zeichen.",
+      en: "2 out of ten – your eye is catching the first signs.",
+    },
+    score3: {
+      de: "3 von 10 – Du bist im Spiel, noch nicht im Vorteil.",
+      en: "3 out of ten – you're in the game, but not yet ahead.",
+    },
+    score4: {
+      de: "4 von 10 – einiges merkst Du, manches übersiehst Du noch.",
+      en: "4 out of ten – you notice some, but you still miss others.",
+    },
+    score5: {
+      de: "5 von 10 – Du lässt Dich nur zur Hälfte reinlegen.",
+      en: "5 out of ten – you're only half taken in.",
+    },
+    score6: {
+      de: "6 von 10 – verborgene Zeichen werden für Dich sichtbar.",
+      en: "6 out of ten – hidden marks are becoming visible to you.",
+    },
+    score7: {
+      de: "7 von 10 – den meisten Schummel durchschaust Du.",
+      en: "7 out of ten – you see through most of the cheating.",
+    },
+    score8: {
+      de: "8 von 10 – die meisten Zeichen hast Du durchschaut.",
+      en: "8 out of ten – you've spotted most of the marks.",
+    },
+    score9: {
+      de: "9 von 10 – Dir entgeht fast nichts.",
+      en: "9 out of ten – almost nothing slips past you.",
+    },
+    score10: {
+      de: "10 von 10 – niemand macht Dir etwas vor.",
+      en: "10 out of ten – no one can fool you.",
     },
   },
   guess: {
@@ -149,4 +195,14 @@ export function formatScoreSummary(
   return template
     .replace("{correct}", String(correct))
     .replace("{total}", String(total));
+}
+
+export function getCompletionMessage(
+  language: Language,
+  correctCount: number,
+): string {
+  // Clamp the score to 0-10 range
+  const score = Math.max(0, Math.min(10, correctCount));
+  const scoreKey = `score${score}` as keyof typeof TEXT.completion;
+  return TEXT.completion[scoreKey][language];
 }
