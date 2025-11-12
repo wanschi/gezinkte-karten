@@ -37,6 +37,7 @@ export interface GameState {
     correct: boolean;
   }[];
   lastActivityTime: number;
+  shuffledCardIds: string[]; // Store shuffled card IDs to maintain order
 }
 
 export type GameAction =
@@ -61,6 +62,7 @@ const initialState: GameState = {
   guess: null,
   results: [],
   lastActivityTime: Date.now(),
+  shuffledCardIds: [],
 };
 
 function isMarkedCard(
@@ -98,6 +100,17 @@ function evaluateGuess(
   return guess.suit === markedCard.suit && guess.value === markedCard.value;
 }
 
+function shuffleCardIds(cards: Array<MarkedCardDefinition | NeutralCardDefinition>): string[] {
+  // Create a copy and shuffle it
+  const shuffled = [...cards];
+  // Fisher-Yates shuffle algorithm
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.map((card) => card.id);
+}
+
 export function gameReducer(state: GameState, action: GameAction): GameState {
   const now = Date.now();
 
@@ -105,14 +118,21 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "SET_LANGUAGE":
       return { ...state, language: action.language, lastActivityTime: now };
 
-    case "START_GAME":
+    case "START_GAME": {
+      // Shuffle cards for round 1
+      const roundDef = getRoundDefForRound(1);
+      const allCards = [roundDef.marked, ...roundDef.neutrals];
+      const shuffledIds = shuffleCardIds(allCards);
+
       return {
         ...initialState,
         language: state.language,
         view: "round-select-back",
         currentRound: 1,
+        shuffledCardIds: shuffledIds,
         lastActivityTime: now,
       };
+    }
 
     case "SELECT_CARD":
       return {
@@ -170,6 +190,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       // After explanation in sub-round A, move to sub-round B of the same main round
       // Round 1 = Main Round 1 Sub-round 1, Round 2 = Main Round 1 Sub-round 2
       // So after explanation in Round 1, we should go to Round 2 (same main round, sub-round 2)
+      // Use the same shuffled cards since it's the same main round
       const nextRound = state.currentRound + 1;
 
       if (nextRound > TOTAL_ROUNDS) {
@@ -184,6 +205,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...state,
         view: "round-select-back",
         currentRound: nextRound,
+        // Keep the same shuffled cards since it's the same main round (just sub-round B)
+        shuffledCardIds: state.shuffledCardIds,
+        selectedCardId: null,
         lastActivityTime: now,
       };
     }
@@ -241,12 +265,19 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         };
       }
 
+      // Shuffle cards for the next round
+      const roundDef = getRoundDefForRound(nextRound);
+      const allCards = [roundDef.marked, ...roundDef.neutrals];
+      const shuffledIds = shuffleCardIds(allCards);
+
       return {
         ...state,
         view: "round-select-back",
         currentRound: nextRound,
         selectedCardForGuess: null,
         guess: null,
+        shuffledCardIds: shuffledIds,
+        selectedCardId: null,
         lastActivityTime: now,
       };
     }
@@ -269,19 +300,39 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
   }
 }
 
-export function getCardsForRound(round: number): {
+export function getCardsForRound(
+  round: number,
+  shuffledCardIds?: string[],
+): {
   marked: MarkedCardDefinition;
   neutrals: NeutralCardDefinition[];
   all: Array<MarkedCardDefinition | NeutralCardDefinition>;
 } {
   const roundDef = getRoundDefForRound(round);
-  const all = [roundDef.marked, ...roundDef.neutrals];
+  const allCards = [roundDef.marked, ...roundDef.neutrals];
 
-  // Shuffle cards for display
+  // If shuffled IDs are provided, return cards in that order
+  // Otherwise, return cards in their original order (shouldn't happen in normal flow)
+  if (shuffledCardIds && shuffledCardIds.length > 0) {
+    // Create a map of card ID to card for quick lookup
+    const cardMap = new Map(allCards.map((card) => [card.id, card]));
+    // Return cards in the shuffled order
+    const shuffledCards = shuffledCardIds
+      .map((id) => cardMap.get(id))
+      .filter((card): card is MarkedCardDefinition | NeutralCardDefinition => card !== undefined);
+
+    return {
+      marked: roundDef.marked,
+      neutrals: roundDef.neutrals,
+      all: shuffledCards,
+    };
+  }
+
+  // Fallback: return cards in original order if no shuffled IDs provided
   return {
     marked: roundDef.marked,
     neutrals: roundDef.neutrals,
-    all: all.sort(() => Math.random() - 0.5),
+    all: allCards,
   };
 }
 

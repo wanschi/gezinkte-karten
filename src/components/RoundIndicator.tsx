@@ -14,4 +14,3 @@ export function RoundIndicator({ round, language }: RoundIndicatorProps) {
     </div>
   );
 }
-

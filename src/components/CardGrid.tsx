@@ -27,16 +27,16 @@ export function CardGrid({
           <button
             key={card.id}
             onClick={() => onCardSelect(card.id)}
-            className={`bg-transparent border-0 p-0 outline-none cursor-pointer transition-all transform ${
+            className={`bg-transparent border-0 p-1 outline-none cursor-pointer transition-all transform rounded-2xl ${
               isSelected
                 ? "ring-4 ring-yellow-400 scale-105 shadow-2xl"
-                : "hover:scale-105 hover:shadow-lg"
+                : "hover:scale-105 hover:shadow-lg ring-0"
             }`}
           >
             <img
               src={imageSrc}
               alt={card.id}
-              className="w-48 h-auto max-h-96 object-contain rounded-lg"
+              className="w-48 h-auto max-h-96 object-contain rounded-xl"
               onError={(e) => {
                 console.error(`Failed to load image: ${imageSrc}`, e);
                 // Fallback: try to reload or show error

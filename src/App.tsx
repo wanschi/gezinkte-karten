@@ -104,7 +104,10 @@ function App() {
         return <StartScreen language={state.language} onStart={handleStart} />;
 
       case "round-select-back": {
-        const cards = getCardsForRound(state.currentRound);
+        const cards = getCardsForRound(
+          state.currentRound,
+          state.shuffledCardIds,
+        );
         const isSubRoundAValue = isSubRoundA(state.currentRound);
         return (
           <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8">
@@ -135,7 +138,10 @@ function App() {
 
       case "round-reveal-back": {
         const roundDef = getRoundDefForRound(state.currentRound);
-        const cards = getCardsForRound(state.currentRound);
+        const cards = getCardsForRound(
+          state.currentRound,
+          state.shuffledCardIds,
+        );
         const isCorrect = state.selectedCardId === roundDef.marked.id;
         const selectedCard = state.selectedCardId
           ? cards.all.find((c) => c.id === state.selectedCardId)
@@ -196,7 +202,10 @@ function App() {
       }
 
       case "round-guess-card": {
-        const cards = getCardsForRound(state.currentRound);
+        const cards = getCardsForRound(
+          state.currentRound,
+          state.shuffledCardIds,
+        );
         const selectedCard = state.selectedCardForGuess
           ? cards.all.find((c) => c.id === state.selectedCardForGuess)
           : null;
@@ -236,7 +245,10 @@ function App() {
 
       case "round-reveal-guess": {
         const roundDef = getRoundDefForRound(state.currentRound);
-        const cards = getCardsForRound(state.currentRound);
+        const cards = getCardsForRound(
+          state.currentRound,
+          state.shuffledCardIds,
+        );
         const selectedCard = state.selectedCardForGuess
           ? cards.all.find((c) => c.id === state.selectedCardForGuess)
           : null;
