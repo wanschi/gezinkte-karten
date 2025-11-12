@@ -74,7 +74,7 @@ export function GuessPicker({
                   : "bg-white/20 text-white hover:bg-white/30"
               }`}
             >
-              {value.labels[language]}
+              {value.short[language]}
             </button>
           ))}
         </div>

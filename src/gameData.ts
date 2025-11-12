@@ -244,10 +244,45 @@ function formatCardLabel(
   return `${valueLabel} of ${suitLabel}`;
 }
 
-function buildPlaceholderExplanation(cardName: LocalizedString): LocalizedString {
+function extractDeckIdFromFileName(fileName: string): string | null {
+  // Extract the ID pattern like I09053, I05028, etc. from filenames
+  // Pattern: -rs-I09053Sp-... or -vs-I09053Sp-...
+  const match = fileName.match(/I(\d{5})Sp/);
+  return match ? `I${match[1]}` : null;
+}
+
+function getExplanationForDeckId(deckId: string | null): LocalizedString {
+  const explanations: Record<string, LocalizedString> = {
+    "I09052": {
+      de: "Am linken Rand, unterhalb der Figur steht die Zahl oder der Buchstabe für den Kartenwert. In gerader Linie weiter unten, ist das Symbol für die Kartenfarbe.",
+      en: "On the left edge below the figure is the number or letter for the card value. In a straight line further down is the symbol for the suit.",
+    },
+    "I09053": {
+      de: "In der linken oberen Ecke formt sich in der Rosenblüte die Zahl oder der Buchstabe für Kartenwert. Rechts am selben Blütenblatt zeigt ein kleines Symbol die Kartenfarbe.",
+      en: "In the upper left rose, the lines form the number or letter for the card value. A small symbol on the right petal indicates the suit.",
+    },
+    "I05028": {
+      de: "Die Markierung beginnt am oberen V der Blüte und läuft im Uhrzeigersinn. Das Blütenblatt mit der fehlenden Linie in der Mitte zeigt den Kartenwert. Die Kartenfarbe wird durch das dünnere V angezeigt und folgt dem Schema auf der Zeichnung.",
+      en: "The marking starts at the upper V of the flower and continues clockwise. The petal with the missing center line shows the card value. The thinner V indicates the suit, following the diagram.",
+    },
+    "I05051": {
+      de: "Beginnend beim König im ersten Kreis wird der Kartenwert im Raster abgezählt. Jeweils 4 Punkte nach rechts, bis zum ersten Kreis in der vierten Reihe (Ass). Die Linie im Kreis zeigt die Farbe: senkrecht = Karo, waagrecht = Herz, diagonal links oben = Pik, diagonal rechts oben = Kreuz.",
+      en: "Starting from the King in the first circle, count four dots to the right for each step until the first circle in the fourth row (Ace). The line inside the circle shows the suit: vertical = diamonds, horizontal = hearts, diagonal upper left = spades, diagonal upper right = clubs.",
+    },
+    "I09051": {
+      de: "An der linken oberen Ecke markieren zwei der drei Blattspitzen die Kartenfarbe: zweite Spitze = Pik, dritte Spitze = Herz, beide = Karo, nur oberste sichtbar = Kreuz. Darunter zeigen vier abgerundeten Blätter im Binärsystem (1,2, 4, 8) den Kartenwert. Gezählt werden die nicht schraffierten Blätter.",
+      en: "At the top left corner, two of the three leaf tips indicate the suit: second tip = spades, third = hearts, both = diamonds, only top visible = clubs. Below, four rounded leaves show the value in binary (1, 2, 4, 8). Add the unshaded leaves.",
+    },
+  };
+
+  if (deckId && explanations[deckId]) {
+    return explanations[deckId];
+  }
+
+  // Fallback to placeholder if deck ID not found
   return {
-    de: `Platzhaltertext: Beschreibe, woran man das ${cardName.de} erkennt.`,
-    en: `Placeholder: Describe how to spot the ${cardName.en}.`,
+    de: `Platzhaltertext: Beschreibe, woran man die Karte erkennt.`,
+    en: `Placeholder: Describe how to spot the card.`,
   };
 }
 
@@ -287,6 +322,10 @@ function createMarkedCard(params: {
     en: formatCardLabel(suit, value, "en"),
   };
 
+  // Extract deck ID from filename and get the corresponding explanation
+  const deckId = extractDeckIdFromFileName(backFileName);
+  const explanation = getExplanationForDeckId(deckId);
+
   return {
     id,
     deck,
@@ -297,7 +336,7 @@ function createMarkedCard(params: {
     backFileName,
     frontFileName,
     name,
-    explanation: buildPlaceholderExplanation(name),
+    explanation,
   };
 }
 

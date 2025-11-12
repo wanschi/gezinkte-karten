@@ -35,11 +35,7 @@ export function ExplanationSlide({
         </div>
       </div>
 
-      <Button
-        variant="primary"
-        size="large"
-        onClick={onContinue}
-      >
+      <Button variant="primary" size="large" onClick={onContinue}>
         {TEXT.buttons.explanationContinue[language]}
       </Button>
     </div>
