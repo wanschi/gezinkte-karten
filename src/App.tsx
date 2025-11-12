@@ -1,35 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import illustration from "./assets/cards.png";
+import "./App.css";
+import { Button } from "./components";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [_count, _setCount] = useState(0);
 
   return (
-    <>
+    <div className="flex flex-row items-center justify-center">
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <img
+          src={illustration}
+          className="logo react"
+          alt="React logo"
+          width={"664.48px"}
+          // width={664.48}
+          // height={784.59}
+        />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <div className="text-left ml-20 pr-60">
+        <h1 className="text-5xl font-bold mb-4">
+          Entdecke, was anderen verborgen bleibt
+        </h1>
+        <h2 className="text-2xl mb-4">
+          Kannst du die gezinkten Karten finden?
+        </h2>
+        <Button size="large">Los geht's!</Button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
