@@ -8,7 +8,8 @@ import type {
 } from "./gameData";
 import {
   TOTAL_ROUNDS,
-  ROUND_DEFINITIONS,
+  getRoundDefinitions,
+  clearRoundDefinitionsCache,
 } from "./gameData";
 
 export type GameView =
@@ -87,10 +88,11 @@ function getMainRoundIndex(round: number): number {
 
 export function getRoundDefForRound(round: number): RoundDefinition {
   const mainRoundIndex = getMainRoundIndex(round);
-  if (mainRoundIndex < 0 || mainRoundIndex >= ROUND_DEFINITIONS.length) {
+  const roundDefinitions = getRoundDefinitions();
+  if (mainRoundIndex < 0 || mainRoundIndex >= roundDefinitions.length) {
     throw new Error(`Invalid round: ${round} (main round index: ${mainRoundIndex})`);
   }
-  return ROUND_DEFINITIONS[mainRoundIndex];
+  return roundDefinitions[mainRoundIndex];
 }
 
 function evaluateGuess(
@@ -119,6 +121,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       return { ...state, language: action.language, lastActivityTime: now };
 
     case "START_GAME": {
+      // Clear round definitions cache to get fresh random cards for this game
+      clearRoundDefinitionsCache();
       // Shuffle cards for round 1
       const roundDef = getRoundDefForRound(1);
       const allCards = [roundDef.marked, ...roundDef.neutrals];
@@ -283,6 +287,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case "RESTART_GAME":
+      // Clear round definitions cache to get fresh random cards for the new game
+      clearRoundDefinitionsCache();
       return {
         ...initialState,
         language: state.language,

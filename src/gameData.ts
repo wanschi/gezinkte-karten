@@ -360,21 +360,120 @@ function createNeutralCard(params: {
   };
 }
 
+/**
+ * Converts a back filename (rs) to the corresponding front filename (vs).
+ * Pattern: -rs-I{deckId}Sp-{suit}-{variant}-{value}.png → -vs-I{deckId}Sp-{suit}-1-{value}.png
+ */
+function convertBackToFrontFileName(backFileName: string): string {
+  // Replace -rs- with -vs- and ensure the middle number is 1
+  // Pattern: -rs-I09052Sp-1-2-01.png → -vs-I09052Sp-1-1-01.png
+  // Pattern: -rs-I09053Sp-1-1-02.png → -vs-I09053Sp-1-1-02.png
+  let frontFileName = backFileName.replace(/-rs-/, "-vs-");
+
+  // Replace the middle number (after suit) with 1 if it's not already 1
+  // Match pattern: Sp-{suit}-{variant}-{value}
+  frontFileName = frontFileName.replace(/Sp-(\d)-(\d)-(\d{2})/, (_match, suit, _variant, value) => {
+    return `Sp-${suit}-1-${value}`;
+  });
+
+  return frontFileName;
+}
+
+/**
+ * Gets all valid marked card backside files for a deck.
+ * Valid files must:
+ * - Contain "rs" in the filename
+ * - NOT contain "joker", "neutral", or "anleitung" in the filename
+ */
+function getValidMarkedCardBacks(deck: DeckId): string[] {
+  const allFiles: Partial<Record<DeckId, string[]>> = {
+    deck_1: [
+      "-rs-I09052Sp-1-2-01.png",
+      "-rs-I09052Sp-1-2-07.png",
+      "-rs-I09052Sp-2-2-02.png",
+      "-rs-I09052Sp-2-2-08.png",
+      "-rs-I09052Sp-2-2-11.png",
+      "-rs-I09052Sp-3-2-03.png",
+      "-rs-I09052Sp-3-2-08.png",
+      "-rs-I09052Sp-4-2-09.png",
+    ],
+    deck_2: [
+      "-rs-I09053Sp-1-1-01.png",
+      "-rs-I09053Sp-1-1-02.png",
+      "-rs-I09053Sp-1-1-03.png",
+      "-rs-I09053Sp-1-1-11.png",
+      "-rs-I09053Sp-2-2-04.png",
+      "-rs-I09053Sp-2-2-10.png",
+      "-rs-I09053Sp-3-2-04.png",
+      "-rs-I09053Sp-3-2-08.png",
+      "-rs-I09053Sp-4-2-09.png",
+      "-rs-I09053Sp-4-2-12.png",
+    ],
+    deck_3: [
+      "-rs-I05028Sp-1-2-06.png",
+      "-rs-I05028Sp-1-2-12.png",
+      "-rs-I05028Sp-2-2-01.png",
+      "-rs-I05028Sp-2-2-04.png",
+      "-rs-I05028Sp-2-2-12.png",
+      "-rs-I05028Sp-3-2-04.png",
+      "-rs-I05028Sp-3-2-13.png",
+      "-rs-I05028Sp-4-2-01.png",
+      "-rs-I05028Sp-4-2-02.png",
+    ],
+    // deck_4: [
+    //   "-rs-I09051Sp-1-2-09.png",
+    //   "-rs-I09051Sp-1-2-13.png",
+    //   "-rs-I09051Sp-2-2-02.png",
+    //   "-rs-I09051Sp-2-2-05.png",
+    //   "-rs-I09051Sp-3-2-01.png",
+    //   "-rs-I09051Sp-3-2-04.png",
+    //   "-rs-I09051Sp-3-2-12.png",
+    //   "-rs-I09051Sp-4-2-03.png",
+    //   "-rs-I09051Sp-4-2-06.png",
+    // ],
+  };
+
+  return allFiles[deck] || [];
+}
+
+/**
+ * Randomly selects a valid marked card backside for a deck.
+ */
+function getRandomMarkedCardBack(deck: DeckId): string {
+  const validFiles = getValidMarkedCardBacks(deck);
+  if (validFiles.length === 0) {
+    throw new Error(`No valid marked card files found for ${deck}`);
+  }
+  const randomIndex = Math.floor(Math.random() * validFiles.length);
+  return validFiles[randomIndex];
+}
+
 function createRound(params: {
   id: string;
   deck: DeckId;
-  marked: { back: string; front: string };
+  marked: { back: string; front: string } | null;
   neutrals: string[];
 }): RoundDefinition {
   const { id, deck, marked, neutrals } = params;
+
+  // If marked card is not provided, randomly select one
+  let markedCard: { back: string; front: string };
+  if (marked) {
+    markedCard = marked;
+  } else {
+    const backFileName = getRandomMarkedCardBack(deck);
+    const frontFileName = convertBackToFrontFileName(backFileName);
+    markedCard = { back: backFileName, front: frontFileName };
+  }
+
   return {
     id,
     deck,
     marked: createMarkedCard({
       deck,
       id: `${id}-marked`,
-      backFileName: marked.back,
-      frontFileName: marked.front,
+      backFileName: markedCard.back,
+      frontFileName: markedCard.front,
     }),
     neutrals: neutrals.map((fileName, index) =>
       createNeutralCard({
@@ -386,68 +485,86 @@ function createRound(params: {
   };
 }
 
-// Total number of sub-rounds (8 rounds displayed to user)
-export const TOTAL_ROUNDS = 8;
+// Total number of sub-rounds (6 rounds displayed to user)
+export const TOTAL_ROUNDS = 6;
 
-// Number of main rounds (4 main rounds, each with 2 sub-rounds)
-export const TOTAL_MAIN_ROUNDS = 4;
+// Number of main rounds (3 main rounds, each with 2 sub-rounds)
+export const TOTAL_MAIN_ROUNDS = 3;
 
-// Round definitions - one per main round
-// Each main round uses the same definition for both sub-rounds
-export const ROUND_DEFINITIONS: RoundDefinition[] = [
-  // Main Round 1: Uses deck_1 (rounds 1-2)
-  createRound({
-    id: "main-round-1",
-    deck: "deck_1",
-    marked: {
-      back: "-rs-I09052Sp-1-2-01.png",
-      front: "-vs-I09052Sp-1-1-01.png",
-    },
-    neutrals: [
-      "-rs-I09050Sp-2-Joker.png",
-      "-rs-I09050Sp-2-Joker.png",
-    ],
-  }),
-  // Main Round 2: Uses deck_2 (rounds 3-4)
-  createRound({
-    id: "main-round-2",
-    deck: "deck_2",
-    marked: {
-      back: "-rs-I09053Sp-1-1-02.png",
-      front: "-vs-I09053Sp-1-1-02.png",
-    },
-    neutrals: [
-      "-rs-I09053Sp-2-2-neutral.png",
-      "-rs-I09053Sp-2-2-neutral.png",
-    ],
-  }),
-  // Main Round 3: Uses deck_3 (rounds 5-6)
-  createRound({
-    id: "main-round-3",
-    deck: "deck_3",
-    marked: {
-      back: "-rs-I05028Sp-1-2-06.png",
-      front: "-vs-I05028Sp-1-1-06.png",
-    },
-    neutrals: [
-      "-rs-I05028Sp-2-2-joker.png",
-      "-rs-I05028Sp-2-2-joker.png",
-    ],
-  }),
-  // Main Round 4: Uses deck_4 (rounds 7-8)
-  createRound({
-    id: "main-round-4",
-    deck: "deck_4",
-    marked: {
-      back: "-rs-I09051Sp-4-2-03.png",
-      front: "-vs-I09051Sp-4-1-03.png",
-    },
-    neutrals: [
-      "-rs-I09051Sp-2-2-joker.png",
-      "-rs-I09051Sp-2-2-joker.png",
-    ],
-  }),
-];
+// Round definitions cache - generated on demand
+let cachedRoundDefinitions: RoundDefinition[] | null = null;
+
+/**
+ * Generates round definitions with random marked cards for each round.
+ * Each game session will have different random selections.
+ */
+function generateRoundDefinitions(): RoundDefinition[] {
+  return [
+    // Main Round 1: Uses deck_1 (rounds 1-2)
+    createRound({
+      id: "main-round-1",
+      deck: "deck_1",
+      marked: null, // Randomly select
+      neutrals: [
+        "-rs-I09050Sp-2-Joker.png",
+        "-rs-I09050Sp-2-Joker.png",
+      ],
+    }),
+    // Main Round 2: Uses deck_2 (rounds 3-4)
+    createRound({
+      id: "main-round-2",
+      deck: "deck_2",
+      marked: null, // Randomly select
+      neutrals: [
+        "-rs-I09053Sp-2-2-neutral.png",
+        "-rs-I09053Sp-2-2-neutral.png",
+      ],
+    }),
+    // Main Round 3: Uses deck_3 (rounds 5-6)
+    createRound({
+      id: "main-round-3",
+      deck: "deck_3",
+      marked: null, // Randomly select
+      neutrals: [
+        "-rs-I05028Sp-2-2-joker.png",
+        "-rs-I05028Sp-2-2-joker.png",
+      ],
+    }),
+    // Main Round 4: Uses deck_4 (rounds 7-8)
+    // createRound({
+    //   id: "main-round-4",
+    //   deck: "deck_4",
+    //   marked: null, // Randomly select
+    //   neutrals: [
+    //     "-rs-I09051Sp-2-2-joker.png",
+    //     "-rs-I09051Sp-2-2-joker.png",
+    //   ],
+    // }),
+  ];
+}
+
+/**
+ * Gets the round definitions, generating them if not already cached.
+ * The cache is cleared when a new game starts to ensure fresh random selections.
+ */
+export function getRoundDefinitions(): RoundDefinition[] {
+  if (cachedRoundDefinitions === null) {
+    cachedRoundDefinitions = generateRoundDefinitions();
+  }
+  return cachedRoundDefinitions;
+}
+
+/**
+ * Clears the cached round definitions. Call this when starting a new game
+ * to ensure fresh random card selections.
+ */
+export function clearRoundDefinitionsCache(): void {
+  cachedRoundDefinitions = null;
+}
+
+// For backward compatibility, export as const that uses the getter
+// Note: This will be the same array reference until cache is cleared
+export const ROUND_DEFINITIONS: RoundDefinition[] = getRoundDefinitions();
 
 export function getCardName(
   language: Language,
