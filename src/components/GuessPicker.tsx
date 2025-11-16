@@ -62,21 +62,33 @@ export function GuessPicker({
           {TEXT.guess.chooseValue[language]}
         </label>
         <div className="flex gap-3 flex-wrap justify-center max-w-2xl">
-          {VALUE_OPTIONS.map((value) => (
-            <button
-              key={value.key}
-              onClick={() =>
-                onValueChange(selectedValue === value.key ? null : value.key)
-              }
-              className={`px-5 py-3 rounded-lg font-medium text-lg transition-all ${
-                selectedValue === value.key
-                  ? "bg-white text-[#1D0D52] shadow-lg scale-105"
-                  : "bg-white/20 text-white hover:bg-white/30"
-              }`}
-            >
-              {value.short[language]}
-            </button>
-          ))}
+          {VALUE_OPTIONS.map((value) => {
+            // Show full labels for A, B, D, K (Ass/Bube/Dame/König in German, Ace/Jack/Queen/King in English)
+            // For numbers, keep the short version (which is already the number)
+            const displayText =
+              value.key === "ace" ||
+              value.key === "jack" ||
+              value.key === "queen" ||
+              value.key === "king"
+                ? value.labels[language]
+                : value.short[language];
+
+            return (
+              <button
+                key={value.key}
+                onClick={() =>
+                  onValueChange(selectedValue === value.key ? null : value.key)
+                }
+                className={`px-5 py-3 rounded-lg font-medium text-lg transition-all ${
+                  selectedValue === value.key
+                    ? "bg-white text-[#1D0D52] shadow-lg scale-105"
+                    : "bg-white/20 text-white hover:bg-white/30"
+                }`}
+              >
+                {displayText}
+              </button>
+            );
+          })}
         </div>
       </div>
 

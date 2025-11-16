@@ -231,6 +231,28 @@ function buildAssetPath(deck: DeckId, fileName: string): string {
   return `/${deck}/${fileName}`;
 }
 
+/**
+ * Gets the explanation image path for a deck, if available.
+ * Returns null if no explanation image exists for the deck.
+ * 
+ * @param deck - The deck ID
+ * @returns The path to the explanation image, or null if not available
+ */
+export function getExplanationImagePath(deck: DeckId): string | null {
+  const explanationImages: Partial<Record<DeckId, string>> = {
+    deck_2: "I09053Sp_erklaerung.png",
+    deck_3: "I05028Sp_erklaerung.png",
+    // deck_1 and deck_4 don't have explanation images yet
+  };
+
+  const fileName = explanationImages[deck];
+  if (!fileName) {
+    return null;
+  }
+
+  return buildAssetPath(deck, fileName);
+}
+
 function formatCardLabel(
   suit: SuitKey,
   value: ValueKey,
