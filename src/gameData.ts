@@ -1,6 +1,6 @@
 import type { Language, LocalizedString } from "./i18n";
 
-export type DeckId = "deck_2" | "deck_3" | "deck_4" | "deck_5";
+export type DeckId = "deck_1" | "deck_2" | "deck_3" | "deck_4";
 
 export type SuitKey = "clubs" | "spades" | "hearts" | "diamonds";
 
@@ -395,9 +395,22 @@ export const TOTAL_MAIN_ROUNDS = 4;
 // Round definitions - one per main round
 // Each main round uses the same definition for both sub-rounds
 export const ROUND_DEFINITIONS: RoundDefinition[] = [
-  // Main Round 1: Uses deck_2 (rounds 1-2)
+  // Main Round 1: Uses deck_1 (rounds 1-2)
   createRound({
     id: "main-round-1",
+    deck: "deck_1",
+    marked: {
+      back: "-rs-I09052Sp-1-2-01.png",
+      front: "-vs-I09052Sp-1-1-01.png",
+    },
+    neutrals: [
+      "-rs-I09050Sp-2-Joker.png",
+      "-rs-I09050Sp-2-Joker.png",
+    ],
+  }),
+  // Main Round 2: Uses deck_2 (rounds 3-4)
+  createRound({
+    id: "main-round-2",
     deck: "deck_2",
     marked: {
       back: "-rs-I09053Sp-1-1-02.png",
@@ -408,9 +421,9 @@ export const ROUND_DEFINITIONS: RoundDefinition[] = [
       "-rs-I09053Sp-2-2-neutral.png",
     ],
   }),
-  // Main Round 2: Uses deck_3 (rounds 3-4)
+  // Main Round 3: Uses deck_3 (rounds 5-6)
   createRound({
-    id: "main-round-2",
+    id: "main-round-3",
     deck: "deck_3",
     marked: {
       back: "-rs-I05028Sp-1-2-06.png",
@@ -421,23 +434,10 @@ export const ROUND_DEFINITIONS: RoundDefinition[] = [
       "-rs-I05028Sp-2-2-joker.png",
     ],
   }),
-  // Main Round 3: Uses deck_4 (rounds 5-6)
-  createRound({
-    id: "main-round-3",
-    deck: "deck_4",
-    marked: {
-      back: "-rs-I05051Sp-1-2-11.png",
-      front: "-vs-I05051Sp-1-1-11.png",
-    },
-    neutrals: [
-      "-rs-I05051Sp-3-2-joker.png",
-      "-rs-I05051Sp-3-2-joker.png",
-    ],
-  }),
-  // Main Round 4: Uses deck_5 (rounds 7-8)
+  // Main Round 4: Uses deck_4 (rounds 7-8)
   createRound({
     id: "main-round-4",
-    deck: "deck_5",
+    deck: "deck_4",
     marked: {
       back: "-rs-I09051Sp-4-2-03.png",
       front: "-vs-I09051Sp-4-1-03.png",
