@@ -6,7 +6,6 @@ import {
   RestartButton,
   CardGrid,
   GuessPicker,
-  ResultScreen,
   ExplanationSlide,
   CompletedScreen,
   Button,
@@ -15,7 +14,7 @@ import {
   gameReducer,
   initialState,
   getCardsForRound,
-  getRoundDefForRound,
+  getMarkedCardForRound,
 } from "./gameState";
 import { SUIT_META, VALUE_META } from "./gameData";
 import type { SuitKey, ValueKey } from "./gameData";
@@ -113,8 +112,12 @@ function App() {
         const cards = getCardsForRound(
           state.currentRound,
           state.shuffledCardIds,
+          state.roundMarkedCards,
         );
         const isSubRoundAValue = isSubRoundA(state.currentRound);
+        // On even rounds (sub-round B), show all cards but only backsides
+        // On odd rounds (sub-round A), show all cards with backsides
+        // Both show the same cards, all with backsides
         return (
           <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8">
             <div className="text-center">
@@ -147,12 +150,16 @@ function App() {
       }
 
       case "round-reveal-back": {
-        const roundDef = getRoundDefForRound(state.currentRound);
+        const markedCard = getMarkedCardForRound(
+          state.currentRound,
+          state.roundMarkedCards,
+        );
         const cards = getCardsForRound(
           state.currentRound,
           state.shuffledCardIds,
+          state.roundMarkedCards,
         );
-        const isCorrect = state.selectedCardId === roundDef.marked.id;
+        const isCorrect = state.selectedCardId === markedCard.id;
         const selectedCard = state.selectedCardId
           ? cards.all.find((c) => c.id === state.selectedCardId)
           : null;
@@ -184,8 +191,8 @@ function App() {
                   {TEXT.feedback.actualMarkedCard[state.language]}
                 </p>
                 <img
-                  src={roundDef.marked.backImage}
-                  alt={roundDef.marked.name[state.language]}
+                  src={markedCard.backImage}
+                  alt={markedCard.name[state.language]}
                   className="w-48 h-auto max-h-96 object-contain rounded-lg shadow-lg"
                 />
               </div>
@@ -202,11 +209,14 @@ function App() {
       }
 
       case "round-explanation": {
-        const roundDef = getRoundDefForRound(state.currentRound);
+        const markedCard = getMarkedCardForRound(
+          state.currentRound,
+          state.roundMarkedCards,
+        );
         return (
           <ExplanationSlide
             language={state.language}
-            markedCard={roundDef.marked}
+            markedCard={markedCard}
             onContinue={handleContinueAfterExplanation}
           />
         );
@@ -216,13 +226,17 @@ function App() {
         const cards = getCardsForRound(
           state.currentRound,
           state.shuffledCardIds,
+          state.roundMarkedCards,
         );
+        const isSubRoundAValue = isSubRoundA(state.currentRound);
         const selectedCard = state.selectedCardForGuess
           ? cards.all.find((c) => c.id === state.selectedCardForGuess)
           : null;
 
+        // On even rounds (sub-round B), always show the backside
+        // On odd rounds (sub-round A), show front if available, otherwise back
         const selectedCardImage = selectedCard
-          ? "frontImage" in selectedCard
+          ? isSubRoundAValue && "frontImage" in selectedCard
             ? selectedCard.frontImage
             : selectedCard.backImage
           : null;
@@ -255,18 +269,14 @@ function App() {
       }
 
       case "round-reveal-guess": {
-        const roundDef = getRoundDefForRound(state.currentRound);
-        const cards = getCardsForRound(
+        const markedCard = getMarkedCardForRound(
           state.currentRound,
-          state.shuffledCardIds,
+          state.roundMarkedCards,
         );
-        const selectedCard = state.selectedCardForGuess
-          ? cards.all.find((c) => c.id === state.selectedCardForGuess)
-          : null;
         const isCorrect =
-          state.selectedCardForGuess === roundDef.marked.id &&
-          state.guess?.suit === roundDef.marked.suit &&
-          state.guess?.value === roundDef.marked.value;
+          state.selectedCardForGuess === markedCard.id &&
+          state.guess?.suit === markedCard.suit &&
+          state.guess?.value === markedCard.value;
 
         const guessLabel =
           state.guess && state.guess.suit && state.guess.value
@@ -278,20 +288,57 @@ function App() {
 
         return (
           <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-8 py-8">
-            <ResultScreen
-              language={state.language}
-              isCorrect={isCorrect}
-              markedCard={roundDef.marked}
-              selectedCardId={state.selectedCardForGuess}
-              selectedCardImage={
-                selectedCard
-                  ? "frontImage" in selectedCard
-                    ? selectedCard.frontImage
-                    : selectedCard.backImage
-                  : null
-              }
-              guess={guessLabel}
-            />
+            <div className="flex flex-col items-center gap-8">
+              <div className="text-center">
+                <h2 className="text-4xl font-bold text-[#1D0D52] mb-4">
+                  {isCorrect
+                    ? TEXT.feedback.correct[state.language]
+                    : TEXT.feedback.incorrect[state.language]}
+                </h2>
+              </div>
+
+              {/* Show marked card backside on left and front side on right */}
+              <div className="flex gap-8 items-center flex-wrap justify-center">
+                <div className="flex flex-col items-center gap-4">
+                  <p className="text-white text-xl font-medium">
+                    {TEXT.feedback.actualMarkedCard[state.language]}
+                  </p>
+                  <img
+                    src={markedCard.backImage}
+                    alt={markedCard.name[state.language]}
+                    className="w-48 h-auto max-h-96 object-contain rounded-lg shadow-lg"
+                  />
+                </div>
+                <div className="flex flex-col items-center gap-4">
+                  <p className="text-white text-xl font-medium">
+                    {markedCard.name[state.language]}
+                  </p>
+                  <img
+                    src={markedCard.frontImage}
+                    alt={markedCard.name[state.language]}
+                    className="w-48 h-auto max-h-96 object-contain rounded-lg shadow-lg"
+                  />
+                </div>
+              </div>
+
+              {/* Show user's guess if available */}
+              {guessLabel && (
+                <div className="text-center">
+                  <p className="text-white text-xl">
+                    {state.language === "de" ? "Deine Vermutung" : "Your guess"}
+                    : {guessLabel.value} {guessLabel.suit}
+                  </p>
+                </div>
+              )}
+
+              <div className="text-center mt-4">
+                <p className="text-white text-xl">
+                  {isCorrect
+                    ? TEXT.feedback.guessMatches[state.language]
+                    : TEXT.feedback.guessFails[state.language]}
+                </p>
+              </div>
+            </div>
             <Button
               variant="primary"
               size="large"

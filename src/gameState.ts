@@ -10,6 +10,9 @@ import {
   TOTAL_ROUNDS,
   getRoundDefinitions,
   clearRoundDefinitionsCache,
+  getRandomMarkedCardBack,
+  convertBackToFrontFileName,
+  createMarkedCard,
 } from "./gameData";
 
 export type GameView =
@@ -39,6 +42,7 @@ export interface GameState {
   }[];
   lastActivityTime: number;
   shuffledCardIds: string[]; // Store shuffled card IDs to maintain order
+  roundMarkedCards: Record<number, MarkedCardDefinition>; // Store marked card for each round
 }
 
 export type GameAction =
@@ -64,14 +68,8 @@ const initialState: GameState = {
   results: [],
   lastActivityTime: Date.now(),
   shuffledCardIds: [],
+  roundMarkedCards: {},
 };
-
-function isMarkedCard(
-  cardId: string,
-  roundDef: RoundDefinition,
-): boolean {
-  return cardId === roundDef.marked.id;
-}
 
 export function isSubRoundA(round: number): boolean {
   // Odd rounds (1, 3, 5, 7) are sub-round A (select + explanation)
@@ -93,6 +91,38 @@ export function getRoundDefForRound(round: number): RoundDefinition {
     throw new Error(`Invalid round: ${round} (main round index: ${mainRoundIndex})`);
   }
   return roundDefinitions[mainRoundIndex];
+}
+
+/**
+ * Gets the marked card for a specific round.
+ * If a custom marked card is stored for this round, use it.
+ * Otherwise, use the one from the round definition.
+ */
+export function getMarkedCardForRound(
+  round: number,
+  roundMarkedCards: Record<number, MarkedCardDefinition>,
+): MarkedCardDefinition {
+  if (roundMarkedCards[round]) {
+    return roundMarkedCards[round];
+  }
+  const roundDef = getRoundDefForRound(round);
+  return roundDef.marked;
+}
+
+/**
+ * Generates a new random marked card for a round based on its deck.
+ */
+function generateNewMarkedCardForRound(round: number): MarkedCardDefinition {
+  const roundDef = getRoundDefForRound(round);
+  const backFileName = getRandomMarkedCardBack(roundDef.deck);
+  const frontFileName = convertBackToFrontFileName(backFileName);
+
+  return createMarkedCard({
+    deck: roundDef.deck,
+    id: `${roundDef.id}-marked-round-${round}`,
+    backFileName,
+    frontFileName,
+  });
 }
 
 function evaluateGuess(
@@ -148,12 +178,12 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "CONFIRM_SELECTION": {
       if (!state.selectedCardId) return state;
 
-      const roundDef = getRoundDefForRound(state.currentRound);
+      const markedCard = getMarkedCardForRound(state.currentRound, state.roundMarkedCards);
       const isSubRoundAValue = isSubRoundA(state.currentRound);
 
       if (isSubRoundAValue) {
         // Sub-round A: Show reveal of back selection
-        const isCorrect = isMarkedCard(state.selectedCardId, roundDef);
+        const isCorrect = state.selectedCardId === markedCard.id;
         return {
           ...state,
           view: "round-reveal-back",
@@ -194,7 +224,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       // After explanation in sub-round A, move to sub-round B of the same main round
       // Round 1 = Main Round 1 Sub-round 1, Round 2 = Main Round 1 Sub-round 2
       // So after explanation in Round 1, we should go to Round 2 (same main round, sub-round 2)
-      // Use the same shuffled cards since it's the same main round
+      // Generate a new random marked card for the even round (2, 4, 6)
       const nextRound = state.currentRound + 1;
 
       if (nextRound > TOTAL_ROUNDS) {
@@ -205,12 +235,23 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         };
       }
 
+      // Generate a new random marked card for the even round
+      const newMarkedCard = generateNewMarkedCardForRound(nextRound);
+
+      // Shuffle cards again for the even round
+      const roundDef = getRoundDefForRound(nextRound);
+      const allCards = [newMarkedCard, ...roundDef.neutrals];
+      const shuffledIds = shuffleCardIds(allCards);
+
       return {
         ...state,
         view: "round-select-back",
         currentRound: nextRound,
-        // Keep the same shuffled cards since it's the same main round (just sub-round B)
-        shuffledCardIds: state.shuffledCardIds,
+        shuffledCardIds: shuffledIds,
+        roundMarkedCards: {
+          ...state.roundMarkedCards,
+          [nextRound]: newMarkedCard,
+        },
         selectedCardId: null,
         lastActivityTime: now,
       };
@@ -230,14 +271,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       if (!state.selectedCardForGuess || !state.guess) return state;
       if (!state.guess.suit || !state.guess.value) return state;
 
-      const roundDef = getRoundDefForRound(state.currentRound);
+      const markedCard = getMarkedCardForRound(state.currentRound, state.roundMarkedCards);
       // In sub-round B, guess is correct if:
       // 1. User selected the correct marked card back
       // 2. User guessed the correct card (suit + value)
-      const selectedCorrectBack = state.selectedCardForGuess === roundDef.marked.id;
+      const selectedCorrectBack = state.selectedCardForGuess === markedCard.id;
       const guessedCorrectCard = evaluateGuess(
         { suit: state.guess.suit, value: state.guess.value },
-        roundDef.marked,
+        markedCard,
       );
       const isCorrect = selectedCorrectBack && guessedCorrectCard;
 
@@ -309,13 +350,18 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 export function getCardsForRound(
   round: number,
   shuffledCardIds?: string[],
+  roundMarkedCards?: Record<number, MarkedCardDefinition>,
 ): {
   marked: MarkedCardDefinition;
   neutrals: NeutralCardDefinition[];
   all: Array<MarkedCardDefinition | NeutralCardDefinition>;
 } {
   const roundDef = getRoundDefForRound(round);
-  const allCards = [roundDef.marked, ...roundDef.neutrals];
+  // Use stored marked card for this round if available, otherwise use the one from round definition
+  const markedCard = roundMarkedCards && roundMarkedCards[round]
+    ? roundMarkedCards[round]
+    : roundDef.marked;
+  const allCards = [markedCard, ...roundDef.neutrals];
 
   // If shuffled IDs are provided, return cards in that order
   // Otherwise, return cards in their original order (shouldn't happen in normal flow)
@@ -328,7 +374,7 @@ export function getCardsForRound(
       .filter((card): card is MarkedCardDefinition | NeutralCardDefinition => card !== undefined);
 
     return {
-      marked: roundDef.marked,
+      marked: markedCard,
       neutrals: roundDef.neutrals,
       all: shuffledCards,
     };
@@ -336,7 +382,7 @@ export function getCardsForRound(
 
   // Fallback: return cards in original order if no shuffled IDs provided
   return {
-    marked: roundDef.marked,
+    marked: markedCard,
     neutrals: roundDef.neutrals,
     all: allCards,
   };

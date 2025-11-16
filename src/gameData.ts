@@ -331,7 +331,7 @@ function parseCardMetadata(fileName: string): {
   return { suit: suitMeta.key, value: valueMeta.key };
 }
 
-function createMarkedCard(params: {
+export function createMarkedCard(params: {
   deck: DeckId;
   backFileName: string;
   frontFileName: string;
@@ -386,7 +386,7 @@ function createNeutralCard(params: {
  * Converts a back filename (rs) to the corresponding front filename (vs).
  * Pattern: -rs-I{deckId}Sp-{suit}-{variant}-{value}.png → -vs-I{deckId}Sp-{suit}-1-{value}.png
  */
-function convertBackToFrontFileName(backFileName: string): string {
+export function convertBackToFrontFileName(backFileName: string): string {
   // Replace -rs- with -vs- and ensure the middle number is 1
   // Pattern: -rs-I09052Sp-1-2-01.png → -vs-I09052Sp-1-1-01.png
   // Pattern: -rs-I09053Sp-1-1-02.png → -vs-I09053Sp-1-1-02.png
@@ -461,7 +461,7 @@ function getValidMarkedCardBacks(deck: DeckId): string[] {
 /**
  * Randomly selects a valid marked card backside for a deck.
  */
-function getRandomMarkedCardBack(deck: DeckId): string {
+export function getRandomMarkedCardBack(deck: DeckId): string {
   const validFiles = getValidMarkedCardBacks(deck);
   if (validFiles.length === 0) {
     throw new Error(`No valid marked card files found for ${deck}`);
