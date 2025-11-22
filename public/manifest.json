@@ -1,0 +1,19 @@
+{
+  "name": "Gezinkte Karten",
+  "short_name": "Gezinkte Karten",
+  "description": "A card game about marked cards",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#5CBFBE",
+  "theme_color": "#5CBFBE",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
+

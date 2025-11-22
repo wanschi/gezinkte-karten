@@ -75,7 +75,6 @@ export function isSubRoundA(round: number): boolean {
   // Odd rounds (1, 3, 5, 7) are sub-round A (select + explanation)
   // Even rounds (2, 4, 6, 8) are sub-round B (select + guess)
   // Each round definition is used for 2 sequential rounds
-  // Round 1-2 use ROUND_DEFINITIONS[0], Round 3-4 use ROUND_DEFINITIONS[1], etc.
   return round % 2 === 1;
 }
 
@@ -224,7 +223,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       // After explanation in sub-round A, move to sub-round B of the same main round
       // Round 1 = Main Round 1 Sub-round 1, Round 2 = Main Round 1 Sub-round 2
       // So after explanation in Round 1, we should go to Round 2 (same main round, sub-round 2)
-      // Generate a new random marked card for the even round (2, 4, 6)
+      // For even rounds (2, 4, 6), skip back selection and go directly to guess view
       const nextRound = state.currentRound + 1;
 
       if (nextRound > TOTAL_ROUNDS) {
@@ -238,7 +237,28 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       // Generate a new random marked card for the even round
       const newMarkedCard = generateNewMarkedCardForRound(nextRound);
 
-      // Shuffle cards again for the even round
+      // Check if this is an even round (2, 4, 6) - skip back selection
+      const isEvenRound = nextRound % 2 === 0;
+
+      if (isEvenRound) {
+        // For even rounds, skip back selection and go directly to guess view
+        // Set selectedCardForGuess to the marked card ID so we can show its front image
+        return {
+          ...state,
+          view: "round-guess-card",
+          currentRound: nextRound,
+          roundMarkedCards: {
+            ...state.roundMarkedCards,
+            [nextRound]: newMarkedCard,
+          },
+          selectedCardForGuess: newMarkedCard.id,
+          selectedCardId: null,
+          guess: null,
+          lastActivityTime: now,
+        };
+      }
+
+      // For odd rounds, continue with normal flow (back selection)
       const roundDef = getRoundDefForRound(nextRound);
       const allCards = [newMarkedCard, ...roundDef.neutrals];
       const shuffledIds = shuffleCardIds(allCards);
@@ -268,19 +288,30 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
 
     case "CONFIRM_GUESS": {
-      if (!state.selectedCardForGuess || !state.guess) return state;
+      if (!state.guess) return state;
       if (!state.guess.suit || !state.guess.value) return state;
 
       const markedCard = getMarkedCardForRound(state.currentRound, state.roundMarkedCards);
-      // In sub-round B, guess is correct if:
-      // 1. User selected the correct marked card back
-      // 2. User guessed the correct card (suit + value)
-      const selectedCorrectBack = state.selectedCardForGuess === markedCard.id;
-      const guessedCorrectCard = evaluateGuess(
-        { suit: state.guess.suit, value: state.guess.value },
-        markedCard,
-      );
-      const isCorrect = selectedCorrectBack && guessedCorrectCard;
+      const isEvenRound = state.currentRound % 2 === 0;
+
+      // For even rounds (2, 4, 6), we skip back selection, so we only check the guess
+      // For odd rounds, we check both back selection and guess
+      let isCorrect: boolean;
+      if (isEvenRound) {
+        // Even rounds: only check if the guess matches the marked card
+        isCorrect = evaluateGuess(
+          { suit: state.guess.suit, value: state.guess.value },
+          markedCard,
+        );
+      } else {
+        // Odd rounds: check both back selection and guess
+        const selectedCorrectBack = state.selectedCardForGuess === markedCard.id;
+        const guessedCorrectCard = evaluateGuess(
+          { suit: state.guess.suit, value: state.guess.value },
+          markedCard,
+        );
+        isCorrect = selectedCorrectBack && guessedCorrectCard;
+      }
 
       return {
         ...state,

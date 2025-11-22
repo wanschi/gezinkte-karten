@@ -8,49 +8,61 @@ interface ExplanationSlideProps {
   language: Language;
   markedCard: MarkedCardDefinition;
   onContinue: () => void;
+  inModal?: boolean;
 }
 
 export function ExplanationSlide({
   language,
   markedCard,
   onContinue,
+  inModal = false,
 }: ExplanationSlideProps) {
   const explanationImagePath = getExplanationImagePath(markedCard.deck);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-8 max-w-4xl mx-auto px-8 py-8">
+    <div
+      className={`flex flex-col items-center justify-center max-w-10/12 mx-auto px-16 ${
+        inModal ? "gap-0 py-14" : "gap-12 py-12 min-h-screen"
+      }`}
+    >
       <div className="text-center">
-        <h2 className="text-4xl font-bold text-[#1D0D52] mb-4">
+        <h2 className="text-5xl font-bold text-[#1D0D52] mb-8">
           {TEXT.prompts.explanationHeading[language]}
         </h2>
       </div>
-
-      <div className="flex gap-8 items-center justify-center flex-wrap">
-        {explanationImagePath ? (
-          <img
-            src={explanationImagePath}
-            alt={markedCard.name[language]}
-            className="w-48 h-auto max-h-96 object-contain rounded-lg shadow-lg"
-          />
-        ) : (
-          <div className="w-48 h-64 flex items-center justify-center bg-gray-800 rounded-lg shadow-lg">
-            <p className="text-white text-sm text-center px-4">
-              {language === "de" 
-                ? "Erklärung nicht verfügbar" 
-                : "Explanation not available"}
+      <div className="flex flex-col items-center justify-center">
+        <div className="flex gap-16 items-center justify-center flex-wrap">
+          <div className="flex-1">
+            <div className="flex justify-end">
+              {explanationImagePath && (
+                <img
+                  src={explanationImagePath}
+                  alt={markedCard.name[language]}
+                  className="h-[720px] w-auto object-contain rounded-lg"
+                  style={{
+                    filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))",
+                  }}
+                />
+              )}
+            </div>
+          </div>
+          <div className="flex-1 ">
+            <p
+              className={`text-white leading-relaxed whitespace-pre-line ${
+                inModal ? "text-xl" : "text-2xl"
+              }`}
+            >
+              {markedCard.explanation[language]}
             </p>
           </div>
-        )}
-        <div className="flex-1 min-w-64">
-          <p className="text-white text-xl leading-relaxed">
-            {markedCard.explanation[language]}
-          </p>
         </div>
       </div>
 
-      <Button variant="primary" size="large" onClick={onContinue}>
-        {TEXT.buttons.explanationContinue[language]}
-      </Button>
+      {!inModal && (
+        <Button variant="primary" size="large" onClick={onContinue}>
+          {TEXT.buttons.explanationContinue[language]}
+        </Button>
+      )}
     </div>
   );
 }

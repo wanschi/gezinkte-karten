@@ -14,7 +14,7 @@ export function CardGrid({
   showBacks = true,
 }: CardGridProps) {
   return (
-    <div className="flex gap-8 justify-center items-center flex-wrap">
+    <div className="flex gap-12 justify-center items-center flex-nowrap">
       {cards.map((card) => {
         const isSelected = selectedCardId === card.id;
         const imageSrc = showBacks
@@ -27,16 +27,17 @@ export function CardGrid({
           <button
             key={card.id}
             onClick={() => onCardSelect(card.id)}
-            className={`bg-transparent border-0 p-1 outline-none cursor-pointer transition-all transform rounded-2xl ${
+            className={`bg-transparent border-0 p-2 outline-none cursor-pointer transition-all transform rounded-2xl flex-shrink ${
               isSelected
-                ? "ring-4 ring-yellow-400 scale-105 shadow-2xl"
-                : "hover:scale-105 hover:shadow-lg ring-0"
+                ? "ring-6 ring-yellow-400 scale-105"
+                : "hover:scale-105 ring-0"
             }`}
           >
             <img
               src={imageSrc}
               alt={card.id}
-              className="w-[275px] h-auto max-h-[550px] object-contain rounded-xl"
+              className="h-[720px] w-auto max-w-[480px] object-contain rounded-xl"
+              style={{ filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))" }}
               onError={(e) => {
                 console.error(`Failed to load image: ${imageSrc}`, e);
                 // Fallback: try to reload or show error

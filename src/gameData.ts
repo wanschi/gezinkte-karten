@@ -1,6 +1,6 @@
 import type { Language, LocalizedString } from "./i18n";
 
-export type DeckId = "deck_1" | "deck_2" | "deck_3" | "deck_4";
+export type DeckId = "deck_1" | "deck_2" | "deck_3";
 
 export type SuitKey = "clubs" | "spades" | "hearts" | "diamonds";
 
@@ -18,11 +18,6 @@ export type ValueKey =
   | "jack"
   | "queen"
   | "king";
-
-export interface CardNameMeta {
-  full: LocalizedString;
-  short: LocalizedString;
-}
 
 export interface SuitMeta {
   key: SuitKey;
@@ -216,9 +211,9 @@ export const VALUE_OPTIONS: ValueMeta[] = Object.values(VALUE_META).sort(
  * Builds a URL path for card images.
  * Filenames now use hyphens instead of # characters, so no encoding is needed.
  * 
- * @param deck - The deck folder name (e.g., "deck_2")
+ * @param deck - The deck folder name (e.g., "deck_1")
  * @param fileName - The filename (e.g., "-rs-I09053Sp-1-1-02.png")
- * @returns A URL path (e.g., "/deck_2/-rs-I09053Sp-1-1-02.png")
+ * @returns A URL path (e.g., "/deck_1/-rs-I09053Sp-1-1-02.png")
  */
 function buildAssetPath(deck: DeckId, fileName: string): string {
   // Validate inputs
@@ -240,9 +235,9 @@ function buildAssetPath(deck: DeckId, fileName: string): string {
  */
 export function getExplanationImagePath(deck: DeckId): string | null {
   const explanationImages: Partial<Record<DeckId, string>> = {
-    deck_2: "I09053Sp_erklaerung.png",
-    deck_3: "I05028Sp_erklaerung.png",
-    // deck_1 and deck_4 don't have explanation images yet
+    deck_1: "I09053Sp_erklaerung.png",
+    deck_2: "I05028Sp_erklaerung.png",
+    deck_3: "I09051Sp_erklaerung.png",
   };
 
   const fileName = explanationImages[deck];
@@ -261,7 +256,7 @@ function formatCardLabel(
   const suitLabel = SUIT_META[suit].labels[language];
   const valueLabel = VALUE_META[value].labels[language];
   if (language === "de") {
-    return `${valueLabel} von ${suitLabel}`;
+    return `${suitLabel} ${valueLabel}`;
   }
   return `${valueLabel} of ${suitLabel}`;
 }
@@ -275,25 +270,17 @@ function extractDeckIdFromFileName(fileName: string): string | null {
 
 function getExplanationForDeckId(deckId: string | null): LocalizedString {
   const explanations: Record<string, LocalizedString> = {
-    "I09052": {
-      de: "Am linken Rand, unterhalb der Figur steht die Zahl oder der Buchstabe für den Kartenwert. In gerader Linie weiter unten, ist das Symbol für die Kartenfarbe.",
-      en: "On the left edge below the figure is the number or letter for the card value. In a straight line further down is the symbol for the suit.",
-    },
     "I09053": {
-      de: "In der linken oberen Ecke formt sich in der Rosenblüte die Zahl oder der Buchstabe für Kartenwert. Rechts am selben Blütenblatt zeigt ein kleines Symbol die Kartenfarbe.",
-      en: "In the upper left rose, the lines form the number or letter for the card value. A small symbol on the right petal indicates the suit.",
+      de: "In der linken oberen Ecke formt sich in der Rosenblüte die Zahl oder der Buchstabe zum Kartenwert. Rechts am selben Blütenblatt zeigt ein kleines Symbol die Kartenfarbe.\n\n Auf der Beispielkarte ist Karo Dame zu sehen.",
+      en: "In the upper left rose, the lines form the number or letter for the card value. A small symbol on the right petal indicates the suit.\n\nOn the example card, diamonds Queen is shown.",
     },
     "I05028": {
-      de: "Die Markierung beginnt am oberen V der Blüte und läuft im Uhrzeigersinn. Das Blütenblatt mit der fehlenden Linie in der Mitte zeigt den Kartenwert. Die Kartenfarbe wird durch das dünnere V angezeigt und folgt dem Schema auf der Zeichnung.",
-      en: "The marking starts at the upper V of the flower and continues clockwise. The petal with the missing center line shows the card value. The thinner V indicates the suit, following the diagram.",
-    },
-    "I05051": {
-      de: "Beginnend beim König im ersten Kreis wird der Kartenwert im Raster abgezählt. Jeweils 4 Punkte nach rechts, bis zum ersten Kreis in der vierten Reihe (Ass). Die Linie im Kreis zeigt die Farbe: senkrecht = Karo, waagrecht = Herz, diagonal links oben = Pik, diagonal rechts oben = Kreuz.",
-      en: "Starting from the King in the first circle, count four dots to the right for each step until the first circle in the fourth row (Ace). The line inside the circle shows the suit: vertical = diamonds, horizontal = hearts, diagonal upper left = spades, diagonal upper right = clubs.",
+      de: "Die Markierung befindet sich an der oberen linken Blüte. Die Kartenfarbe wird durch das dünnere V angezeigt und folgt dem Schema auf der Zeichnung.\n\nDas Blütenblatt mit der fehlenden Linie zeigt den Kartenwert wie auf der Zeichnung. Der König wird durch einen weißen Punkt in der Mitte der Blüte bestimmt.\n\nAuf der Beispielkarte ist Kreuz 6 zu sehen.",
+      en: "The mark is located on the upper left flower. The card color is indicated by the thinner V and follows the pattern shown in the drawing.\n\nThe petal with the missing line shows the card value as shown in the drawing. The king is indicated by a white dot in the center of the flower.\n\nThe example card shows the 6 of clubs."
     },
     "I09051": {
-      de: "An der linken oberen Ecke markieren zwei der drei Blattspitzen die Kartenfarbe: zweite Spitze = Pik, dritte Spitze = Herz, beide = Karo, nur oberste sichtbar = Kreuz. Darunter zeigen vier abgerundeten Blätter im Binärsystem (1,2, 4, 8) den Kartenwert. Gezählt werden die nicht schraffierten Blätter.",
-      en: "At the top left corner, two of the three leaf tips indicate the suit: second tip = spades, third = hearts, both = diamonds, only top visible = clubs. Below, four rounded leaves show the value in binary (1, 2, 4, 8). Add the unshaded leaves.",
+      de: "An der linken oberen Ecke markieren die zwei unteren der drei Blätter am linken Rand die Kartenfarbe. Das oberste Blatt ist immer zu sehen.\n\nKein Blatt zu sehen: Kreuz\nOberes Blatt zu sehen: Pik\nUnteres Blatt zu sehen: Herz\nZwei Blätter zu sehen: Karo (wie auf der Beispielkarte)\n\nDarunter zeigen vier abgerundeten Blätter den Kartenwert. Es werden die unschraffierten Blätter gezählt. Das oberste Blatt hat den Wert 1, das zweite 2, das dritte 4 und das untere 8. Wenn mehrere schraffiert sind, werden die Werte wie auf der Beispielkarte addiert (6).\n\nDer Wert wird übersetzt in den Kartenwert (z.B. 1 = Ass, 13 = König).\n\nAuf der Beispielkarte ist die Karo 6 zu sehen.",
+      en: "In the upper left corner, the two lower of the three leaves on the left edge indicate the suit of the card. The top leaf is always visible.\n\nNo leaf visible: clubs\nTop leaf visible: spades\nBottom leaf visible: hearts\nTwo leaves visible: diamonds (as on the example card)\n\nBelow this, four rounded leaves indicate the card value. The unshaded leaves are counted. The top leaf has a value of 1, the second 2, the third 4, and the bottom 8. If several are shaded, the values are added together as shown on the example card (6).\n\nThe value is converted into the card value (e.g., 1 = ace, 13 = king).\n\nThe example card shows the diamond 6."
     },
   };
 
@@ -410,16 +397,6 @@ export function convertBackToFrontFileName(backFileName: string): string {
 function getValidMarkedCardBacks(deck: DeckId): string[] {
   const allFiles: Partial<Record<DeckId, string[]>> = {
     deck_1: [
-      "-rs-I09052Sp-1-2-01.png",
-      "-rs-I09052Sp-1-2-07.png",
-      "-rs-I09052Sp-2-2-02.png",
-      "-rs-I09052Sp-2-2-08.png",
-      "-rs-I09052Sp-2-2-11.png",
-      "-rs-I09052Sp-3-2-03.png",
-      "-rs-I09052Sp-3-2-08.png",
-      "-rs-I09052Sp-4-2-09.png",
-    ],
-    deck_2: [
       "-rs-I09053Sp-1-1-01.png",
       "-rs-I09053Sp-1-1-02.png",
       "-rs-I09053Sp-1-1-03.png",
@@ -431,28 +408,28 @@ function getValidMarkedCardBacks(deck: DeckId): string[] {
       "-rs-I09053Sp-4-2-09.png",
       "-rs-I09053Sp-4-2-12.png",
     ],
-    deck_3: [
+    deck_2: [
       "-rs-I05028Sp-1-2-06.png",
       "-rs-I05028Sp-1-2-12.png",
       "-rs-I05028Sp-2-2-01.png",
-      "-rs-I05028Sp-2-2-04.png",
+      // "-rs-I05028Sp-2-2-04.png", // Seems like the front image is missing?
       "-rs-I05028Sp-2-2-12.png",
       "-rs-I05028Sp-3-2-04.png",
       "-rs-I05028Sp-3-2-13.png",
       "-rs-I05028Sp-4-2-01.png",
       "-rs-I05028Sp-4-2-02.png",
     ],
-    // deck_4: [
-    //   "-rs-I09051Sp-1-2-09.png",
-    //   "-rs-I09051Sp-1-2-13.png",
-    //   "-rs-I09051Sp-2-2-02.png",
-    //   "-rs-I09051Sp-2-2-05.png",
-    //   "-rs-I09051Sp-3-2-01.png",
-    //   "-rs-I09051Sp-3-2-04.png",
-    //   "-rs-I09051Sp-3-2-12.png",
-    //   "-rs-I09051Sp-4-2-03.png",
-    //   "-rs-I09051Sp-4-2-06.png",
-    // ],
+    deck_3: [
+      "-rs-I09051Sp-1-2-09.png",
+      "-rs-I09051Sp-1-2-13.png",
+      "-rs-I09051Sp-2-2-02.png",
+      "-rs-I09051Sp-2-2-05.png",
+      "-rs-I09051Sp-3-2-01.png",
+      "-rs-I09051Sp-3-2-04.png",
+      "-rs-I09051Sp-3-2-12.png",
+      "-rs-I09051Sp-4-2-03.png",
+      "-rs-I09051Sp-4-2-06.png",
+    ],
   };
 
   return allFiles[deck] || [];
@@ -510,9 +487,6 @@ function createRound(params: {
 // Total number of sub-rounds (6 rounds displayed to user)
 export const TOTAL_ROUNDS = 6;
 
-// Number of main rounds (3 main rounds, each with 2 sub-rounds)
-export const TOTAL_MAIN_ROUNDS = 3;
-
 // Round definitions cache - generated on demand
 let cachedRoundDefinitions: RoundDefinition[] | null = null;
 
@@ -528,8 +502,8 @@ function generateRoundDefinitions(): RoundDefinition[] {
       deck: "deck_1",
       marked: null, // Randomly select
       neutrals: [
-        "-rs-I09050Sp-2-Joker.png",
-        "-rs-I09050Sp-2-Joker.png",
+        "-rs-I09053Sp-2-2-neutral.png",
+        "-rs-I09053Sp-2-2-neutral.png",
       ],
     }),
     // Main Round 2: Uses deck_2 (rounds 3-4)
@@ -538,8 +512,8 @@ function generateRoundDefinitions(): RoundDefinition[] {
       deck: "deck_2",
       marked: null, // Randomly select
       neutrals: [
-        "-rs-I09053Sp-2-2-neutral.png",
-        "-rs-I09053Sp-2-2-neutral.png",
+        "-rs-I05028Sp-2-2-joker.png",
+        "-rs-I05028Sp-2-2-joker.png",
       ],
     }),
     // Main Round 3: Uses deck_3 (rounds 5-6)
@@ -548,20 +522,10 @@ function generateRoundDefinitions(): RoundDefinition[] {
       deck: "deck_3",
       marked: null, // Randomly select
       neutrals: [
-        "-rs-I05028Sp-2-2-joker.png",
-        "-rs-I05028Sp-2-2-joker.png",
+        "-rs-I09051Sp-2-2-joker.png",
+        "-rs-I09051Sp-2-2-joker.png",
       ],
     }),
-    // Main Round 4: Uses deck_4 (rounds 7-8)
-    // createRound({
-    //   id: "main-round-4",
-    //   deck: "deck_4",
-    //   marked: null, // Randomly select
-    //   neutrals: [
-    //     "-rs-I09051Sp-2-2-joker.png",
-    //     "-rs-I09051Sp-2-2-joker.png",
-    //   ],
-    // }),
   ];
 }
 
@@ -584,14 +548,3 @@ export function clearRoundDefinitionsCache(): void {
   cachedRoundDefinitions = null;
 }
 
-// For backward compatibility, export as const that uses the getter
-// Note: This will be the same array reference until cache is cleared
-export const ROUND_DEFINITIONS: RoundDefinition[] = getRoundDefinitions();
-
-export function getCardName(
-  language: Language,
-  suit: SuitKey,
-  value: ValueKey,
-): string {
-  return formatCardLabel(suit, value, language);
-}

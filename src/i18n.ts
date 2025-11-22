@@ -31,16 +31,16 @@ export const TEXT = {
       en: "Which card is marked?",
     },
     explanationHeading: {
-      de: "Darum ist diese Karte gezinkt",
-      en: "Why this card is marked",
+      de: "Wie ist dieses Deck gezinkt?",
+      en: "How is this deck marked?",
     },
     doubleQuestion: {
       de: "Welche Rückseite ist gezinkt und welche Karte ist es?",
       en: "Which back is marked and which card is it?",
     },
     guessInstruction: {
-      de: "Wie lautet die Karte?",
-      en: "What is the card?",
+      de: "Welche Karte ist das?",
+      en: "Which card is it?",
     },
     revealHeading: {
       de: "Auflösung",
@@ -68,23 +68,35 @@ export const TEXT = {
       de: "Neu starten",
       en: "Restart",
     },
+    explanation: {
+      de: "Erklärung",
+      en: "Explanation",
+    },
     guessConfirm: {
       de: "Eingabe bestätigen",
       en: "Confirm guess",
     },
     explanationContinue: {
-      de: "Weiter zum nächsten Deck",
-      en: "Continue to next deck",
+      de: "Weiter",
+      en: "Continue",
     },
   },
   feedback: {
     correct: {
-      de: "Richtig!",
-      en: "Correct!",
+      de: "Richtig",
+      en: "Correct",
     },
     incorrect: {
       de: "Leider falsch",
-      en: "Not quite",
+      en: "Unfortunately wrong",
+    },
+    correctMessage: {
+      de: "Deine gewählte Karte ist gezinkt",
+      en: "Your chosen card is marked",
+    },
+    incorrectMessage: {
+      de: "Deine gewählte Karte ist nicht gezinkt",
+      en: "Your chosen card is not marked",
     },
     yourChoice: {
       de: "Deine Auswahl",
@@ -93,14 +105,6 @@ export const TEXT = {
     actualMarkedCard: {
       de: "Gezinkte Karte",
       en: "Marked card",
-    },
-    guessMatches: {
-      de: "Deine Vermutung war richtig.",
-      en: "Your guess was right.",
-    },
-    guessFails: {
-      de: "Deine Vermutung war nicht richtig.",
-      en: "Your guess was not correct.",
     },
     totalScore: {
       de: "Du hast {correct} von {total} richtig erkannt.",

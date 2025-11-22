@@ -38,12 +38,10 @@
 .button--primary:hover:not(:disabled) {
   background-color: #d65a99;
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(227, 118, 173, 0.3);
 }
 
 .button--primary:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(227, 118, 173, 0.2);
 }
 
 /* Secondary variant */
@@ -55,12 +53,10 @@
 .button--secondary:hover:not(:disabled) {
   background-color: #4da8a6;
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(92, 191, 190, 0.3);
 }
 
 .button--secondary:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(92, 191, 190, 0.2);
 }
 
 /* Outline variant */
@@ -74,26 +70,24 @@
   background-color: #1D0D52;
   color: white;
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(29, 13, 82, 0.3);
 }
 
 .button--outline:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(29, 13, 82, 0.2);
 }
 
 /* Sizes */
 .button--small {
-  padding: 0.4em 0.8em;
-  font-size: 0.875em;
+  padding: 0.4em 1.2em;
+  font-size: 1.25em;
 }
 
 .button--medium {
-  padding: 0.6em 1.2em;
-  font-size: 1em;
+  padding: 0.6em 1.8em;
+  font-size: 1.5em;
 }
 
 .button--large {
-  padding: 0.8em 1.6em;
-  font-size: 1.125em;
+  padding: 0.8em 2.4em;
+  font-size: 1.75em;
 }

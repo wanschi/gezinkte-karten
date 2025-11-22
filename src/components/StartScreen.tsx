@@ -16,25 +16,20 @@ export function StartScreen({
   onLanguageChange,
 }: StartScreenProps) {
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="absolute top-4 right-4 z-10">
-        <LanguageSwitch
-          language={language}
-          onLanguageChange={onLanguageChange}
-        />
-      </div>
+    <div className="min-h-screen flex flex-col relative">
+      <LanguageSwitch language={language} onLanguageChange={onLanguageChange} />
 
-      <div className="flex-1 flex items-center pr-8 py-16">
-        <div className="flex flex-col md:flex-row items-center w-full">
-          <div className="shrink-0 w-full md:w-auto flex items-center">
+      <div className="flex-1 flex items-center pr-16 py-20">
+        <div className="flex flex-row items-center w-full gap-16">
+          <div className="shrink-0 flex items-center">
             <img
               src={cardsImage}
               alt="Cards illustration"
-              className="w-full max-w-[38.4rem] h-auto object-contain scale-[0.9] -translate-x-8"
+              className="h-[864px] w-auto object-contain"
             />
           </div>
-          <div className="flex-1 w-full md:w-1/2 flex items-center justify-center md:ml-">
-            <div className="flex flex-col items-center md:items-start gap-4 text-center md:text-left">
+          <div className="flex-1 flex items-center justify-center">
+            <div className="flex flex-col items-start gap-8 text-left">
               <h1 className="text-[#1D0D52] font-bold">
                 {TEXT.start.title[language]}
               </h1>
