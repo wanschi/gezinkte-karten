@@ -44,6 +44,8 @@ export default defineConfig({
         ],
         // Pre-cache all assets on first install
         globIgnores: ['**/node_modules/**/*'],
+        // Increase file size limit to allow caching large PNG images (largest is ~4.75 MB)
+        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024, // 6 MB
         // Cache all navigation requests (HTML pages)
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/_/, /\/[^/?]+\.[^/]+$/],
