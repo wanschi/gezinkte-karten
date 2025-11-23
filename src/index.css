@@ -85,3 +85,19 @@ button {
     transform: translateY(20px) scale(0.95);
   }
 }
+
+/* Card shuffle/deal animation */
+@keyframes dealCard {
+  from {
+    opacity: 0;
+    transform: translateY(100vh) translateX(var(--random-x, 0px)) rotate(var(--random-rotation, 0deg)) scale(0.6);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(30vh) translateX(calc(var(--random-x, 0px) * 0.5)) rotate(calc(var(--random-rotation, 0deg) * 0.5)) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+  }
+}

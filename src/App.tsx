@@ -175,7 +175,7 @@ function App() {
 
               {/* Message text */}
               <div className="text-center">
-                <p className="text-white text-2xl">
+                <p className="text-white text-3xl">
                   {isCorrect
                     ? TEXT.feedback.correctMessage[state.language]
                     : TEXT.feedback.incorrectMessage[state.language]}
@@ -360,7 +360,7 @@ function App() {
               {/* Show user's guess if available */}
               {guessLabel && (
                 <div className="text-center">
-                  <p className="text-white text-2xl">
+                  <p className="text-white text-3xl">
                     {state.language === "de" ? "Deine Vermutung" : "Your guess"}
                     :{" "}
                     {state.language === "de"

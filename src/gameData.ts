@@ -279,8 +279,8 @@ function getExplanationForDeckId(deckId: string | null): LocalizedString {
       en: "The mark is located on the upper left flower. The card color is indicated by the thinner V and follows the pattern shown in the drawing.\n\nThe petal with the missing line shows the card value as shown in the drawing. The king is indicated by a white dot in the center of the flower.\n\nThe example card shows the 6 of clubs."
     },
     "I09051": {
-      de: "An der linken oberen Ecke markieren die zwei unteren der drei Blätter am linken Rand die Kartenfarbe. Das oberste Blatt ist immer zu sehen.\n\nKein Blatt zu sehen: Kreuz\nOberes Blatt zu sehen: Pik\nUnteres Blatt zu sehen: Herz\nZwei Blätter zu sehen: Karo (wie auf der Beispielkarte)\n\nDarunter zeigen vier abgerundeten Blätter den Kartenwert. Es werden die unschraffierten Blätter gezählt. Das oberste Blatt hat den Wert 1, das zweite 2, das dritte 4 und das untere 8. Wenn mehrere schraffiert sind, werden die Werte wie auf der Beispielkarte addiert (6).\n\nDer Wert wird übersetzt in den Kartenwert (z.B. 1 = Ass, 13 = König).\n\nAuf der Beispielkarte ist die Karo 6 zu sehen.",
-      en: "In the upper left corner, the two lower of the three leaves on the left edge indicate the suit of the card. The top leaf is always visible.\n\nNo leaf visible: clubs\nTop leaf visible: spades\nBottom leaf visible: hearts\nTwo leaves visible: diamonds (as on the example card)\n\nBelow this, four rounded leaves indicate the card value. The unshaded leaves are counted. The top leaf has a value of 1, the second 2, the third 4, and the bottom 8. If several are shaded, the values are added together as shown on the example card (6).\n\nThe value is converted into the card value (e.g., 1 = ace, 13 = king).\n\nThe example card shows the diamond 6."
+      de: "An der linken oberen Ecke markieren die zwei unteren der drei Blätter am linken Rand die Kartenfarbe. Das oberste Blatt ist immer zu sehen.\n\nKein Blatt zu sehen: Kreuz\nOberes Blatt zu sehen: Pik\nUnteres Blatt zu sehen: Herz\nZwei Blätter zu sehen: Karo (wie auf der Beispielkarte)\n\nDarunter zeigen vier abgerundeten Blätter den Kartenwert. Es werden die unschraffierten Blätter gezählt. Das oberste Blatt hat den Wert 1, das zweite 2, das dritte 4 und das untere 8. Wenn mehrere unschraffiert sind, werden die Werte wie auf der Beispielkarte addiert (6).\n\nDer Wert wird übersetzt in den Kartenwert (z.B. 1 = Ass, 13 = König).\n\nAuf der Beispielkarte ist die Karo 6 zu sehen.",
+      en: "In the upper left corner, the two lower of the three leaves on the left edge indicate the suit of the card. The top leaf is always visible.\n\nNo leaf visible: clubs\nTop leaf visible: spades\nBottom leaf visible: hearts\nTwo leaves visible: diamonds (as on the example card)\n\nBelow this, four rounded leaves indicate the card value. The unshaded leaves are counted. The top leaf has a value of 1, the second 2, the third 4, and the bottom 8. If several are unshaded, the values are added together as shown on the example card (6).\n\nThe value is converted into the card value (e.g., 1 = ace, 13 = king).\n\nThe example card shows the diamond 6."
     },
   };
 
@@ -402,7 +402,7 @@ function getValidMarkedCardBacks(deck: DeckId): string[] {
       "-rs-I09053Sp-1-1-03.png",
       "-rs-I09053Sp-1-1-11.png",
       "-rs-I09053Sp-2-2-04.png",
-      "-rs-I09053Sp-2-2-10.png",
+      // "-rs-I09053Sp-2-2-10.png", // Image broken
       "-rs-I09053Sp-3-2-04.png",
       "-rs-I09053Sp-3-2-08.png",
       "-rs-I09053Sp-4-2-09.png",
