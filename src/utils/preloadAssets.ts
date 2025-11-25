@@ -3,7 +3,8 @@
  * Returns a promise that resolves when the image loads or rejects on error.
  */
 function preloadImage(src: string): Promise<void> {
-  return new Promise((resolve, reject) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return new Promise((resolve, _reject) => {
     const img = new Image();
     img.onload = () => resolve();
     img.onerror = () => {
