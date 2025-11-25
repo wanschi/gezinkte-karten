@@ -119,7 +119,7 @@ function App() {
         // On odd rounds (sub-round A), show all cards with backsides
         // Both show the same cards, all with backsides
         return (
-          <div className="flex flex-col items-center justify-center min-h-screen gap-12 px-16 py-12">
+          <div className="flex flex-col items-center justify-center min-h-screen gap-[3vh] px-[4vw] py-[3vh]">
             <div className="text-center">
               <h2 className="text-4xl font-bold text-[#1D0D52] mb-6">
                 {isSubRoundAValue
@@ -134,7 +134,7 @@ function App() {
               showBacks={true}
             />
             {/* Reserve space for button to prevent layout jump */}
-            <div className="h-24 flex items-center justify-center min-h-[96px]">
+            <div className="h-[8vh] flex items-center justify-center">
               {state.selectedCardId && (
                 <Button
                   variant="primary"
@@ -157,7 +157,7 @@ function App() {
         const isCorrect = state.selectedCardId === markedCard.id;
 
         return (
-          <div className="flex flex-col items-center justify-center min-h-screen gap-12 px-16 py-12">
+          <div className="flex flex-col items-center justify-center min-h-screen gap-[3vh] px-[4vw] py-[3vh]">
             {/* Icon */}
             <div className="mb-6">
               <div className="flex justify-center mb-8">
@@ -184,7 +184,7 @@ function App() {
             </div>
 
             {/* Button - same position as previous step */}
-            <div className="h-24 flex items-center justify-center min-h-[96px]">
+            <div className="h-[8vh] flex items-center justify-center">
               <Button
                 variant="primary"
                 size="large"
@@ -244,16 +244,16 @@ function App() {
           state.guess.value !== null;
 
         return (
-          <div className="flex flex-col items-center justify-center min-h-screen gap-12 px-16 py-12">
+          <div className="flex flex-col items-center justify-center min-h-screen gap-[3vh] px-[4vw] py-[3vh]">
             {/* Card on left, GuessPicker on right */}
-            <div className="flex flex-row items-center justify-center gap-16 flex-wrap">
+            <div className="flex flex-row items-center justify-center gap-[4vw] flex-wrap">
               {/* Card on left */}
               {selectedCardImage && (
-                <div className="flex flex-col items-center gap-6 mr-20">
+                <div className="flex flex-col items-center gap-[2vh] mr-[4vw]">
                   <img
                     src={selectedCardImage}
                     alt="Selected card"
-                    className="h-[720px] w-auto object-contain rounded-lg"
+                    className="h-[50vh] w-auto object-contain rounded-lg"
                     style={{
                       filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))",
                     }}
@@ -280,7 +280,7 @@ function App() {
             </div>
 
             {/* Submit button centered below */}
-            <div className="flex justify-center mt-8">
+            <div className="flex justify-center mt-[2vh]">
               <Button
                 variant="primary"
                 size="large"
@@ -320,7 +320,7 @@ function App() {
             : null;
 
         return (
-          <div className="flex flex-col items-center justify-center min-h-screen gap-12 px-16 py-12">
+          <div className="flex flex-col items-center justify-center min-h-screen gap-[3vh] px-[4vw] py-[3vh]">
             <div className="flex flex-col items-center">
               <div className="flex flex-col items-center gap-4 mb-4">
                 <FeedbackIcon isCorrect={isCorrect} size={116} />
@@ -334,22 +334,22 @@ function App() {
               </div>
 
               {/* Show marked card backside on left and front side on right */}
-              <div className="flex gap-16 items-center flex-wrap justify-center mb-12">
-                <div className="flex flex-col items-center gap-6">
+              <div className="flex gap-[4vw] items-center flex-wrap justify-center mb-[3vh]">
+                <div className="flex flex-col items-center gap-[2vh]">
                   <img
                     src={markedCard.backImage}
                     alt={markedCard.name[state.language]}
-                    className="h-[576px] w-auto object-contain rounded-lg"
+                    className="h-[45vh] w-auto object-contain rounded-lg"
                     style={{
                       filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))",
                     }}
                   />
                 </div>
-                <div className="flex flex-col items-center gap-6">
+                <div className="flex flex-col items-center gap-[2vh]">
                   <img
                     src={markedCard.frontImage}
                     alt={markedCard.name[state.language]}
-                    className="h-[576px] w-auto object-contain rounded-lg"
+                    className="h-[45vh] w-auto object-contain rounded-lg"
                     style={{
                       filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))",
                     }}

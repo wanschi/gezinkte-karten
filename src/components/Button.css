@@ -78,16 +78,16 @@
 
 /* Sizes */
 .button--small {
-  padding: 0.4em 1.2em;
-  font-size: 1.25em;
+  padding: 0.3em 1em;
+  font-size: 1.1em;
 }
 
 .button--medium {
-  padding: 0.6em 1.8em;
-  font-size: 1.5em;
+  padding: 0.5em 1.5em;
+  font-size: 1.3em;
 }
 
 .button--large {
-  padding: 0.8em 2.4em;
-  font-size: 1.75em;
+  padding: 0.6em 2em;
+  font-size: 1.5em;
 }

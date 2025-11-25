@@ -41,26 +41,26 @@ export function GuessPicker({
 
   return (
     <>
-      <div className="flex flex-col items-start gap-10 relative">
+      <div className="flex flex-col items-start gap-[2vh] relative">
         <div className="text-left">
-          <h2 className="text-4xl font-bold text-[#1D0D52] mb-6">
+          <h2 className="text-4xl font-bold text-[#1D0D52] mb-[1.5vh]">
             {TEXT.prompts.guessInstruction[language]}
           </h2>
         </div>
 
         {/* Suit Selection */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-[1.5vh]">
           <label className="text-white text-2xl font-medium text-left">
             {TEXT.guess.chooseSuit[language]}
           </label>
-          <div className="flex gap-6 flex-wrap justify-start">
+          <div className="flex gap-[1.5vw] flex-wrap justify-start">
             {SUIT_OPTIONS.map((suit) => (
               <button
                 key={suit.key}
                 onClick={() =>
                   onSuitChange(selectedSuit === suit.key ? null : suit.key)
                 }
-                className={`px-8 py-6 rounded-lg font-medium text-2xl transition-all ${
+                className={`px-[2vw] py-[1.5vh] rounded-lg font-medium text-2xl transition-all ${
                   selectedSuit === suit.key
                     ? "bg-white text-[#1D0D52] scale-105"
                     : "bg-white/20 text-white hover:bg-white/30"
@@ -74,11 +74,11 @@ export function GuessPicker({
         </div>
 
         {/* Value Selection */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-[1.5vh]">
           <label className="text-white text-2xl font-medium text-left">
             {TEXT.guess.chooseValue[language]}
           </label>
-          <div className="flex gap-5 flex-wrap justify-start max-w-3xl">
+          <div className="flex gap-[1vw] flex-wrap justify-start max-w-[50vw]">
             {VALUE_OPTIONS.map((value) => {
               // Show full labels for A, B, D, K (Ass/Bube/Dame/König in German, Ace/Jack/Queen/King in English)
               // For numbers, keep the short version (which is already the number)
@@ -125,10 +125,10 @@ export function GuessPicker({
 
         {/* Explanation Button - bottom right (fixed to viewport) */}
         {markedCard && (
-          <div className="fixed bottom-8 right-8 z-10">
+          <div className="fixed bottom-[2vh] right-[2vw] z-10">
             <button
               onClick={() => setShowExplanation(true)}
-              className="px-8 py-4 bg-white/20 text-white rounded-lg font-medium text-2xl hover:bg-white/30 transition-colors"
+              className="px-[2vw] py-[1vh] bg-white/20 text-white rounded-lg font-medium text-2xl hover:bg-white/30 transition-colors"
             >
               {TEXT.buttons.explanation[language]}
             </button>
@@ -162,7 +162,7 @@ export function GuessPicker({
             {/* Close Button - top right corner */}
             <button
               onClick={handleCloseModal}
-              className="absolute top-8 right-8 z-10 px-6 py-3 bg-white/20 text-white rounded-lg font-medium text-xl hover:bg-white/30 transition-colors"
+              className="absolute top-[2vh] right-[2vw] z-10 px-[1.5vw] py-[1vh] bg-white/20 text-white rounded-lg font-medium text-xl hover:bg-white/30 transition-colors"
             >
               ✕
             </button>

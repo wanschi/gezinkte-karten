@@ -9,7 +9,7 @@ interface RoundIndicatorProps {
 
 export function RoundIndicator({ round, language }: RoundIndicatorProps) {
   return (
-    <div className="absolute top-8 left-8 text-white text-3xl font-bold z-10">
+    <div className="absolute top-[2vh] left-[2vw] text-white text-2xl font-bold z-10">
       {formatRoundIndicator(language, round, TOTAL_ROUNDS)}
     </div>
   );

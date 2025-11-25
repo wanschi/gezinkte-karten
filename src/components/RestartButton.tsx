@@ -8,14 +8,13 @@ interface RestartButtonProps {
 
 export function RestartButton({ language, onRestart }: RestartButtonProps) {
   return (
-    <div className="absolute top-8 right-8 z-10">
+    <div className="absolute top-[1.5vh] right-[1.5vw] z-10">
       <button
         onClick={onRestart}
-        className="px-8 py-4 bg-white/20 text-white rounded-lg font-medium text-2xl hover:bg-white/30 transition-colors"
+        className="px-[1.5vw] py-[0.8vh] bg-white/20 text-white rounded-lg font-medium text-xl hover:bg-white/30 transition-colors"
       >
         {TEXT.buttons.restart[language]}
       </button>
     </div>
   );
 }
-
