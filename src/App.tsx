@@ -134,11 +134,11 @@ function App() {
               showBacks={true}
             />
             {/* Reserve space for button to prevent layout jump */}
-            <div className="h-[8vh] flex items-center justify-center">
+            <div className="h-[8vh] mt-5 flex items-center justify-center">
               {state.selectedCardId && (
                 <Button
                   variant="primary"
-                  size="large"
+                  size="medium"
                   onClick={handleConfirmSelection}
                 >
                   {TEXT.buttons.next[state.language]}
@@ -159,14 +159,14 @@ function App() {
         return (
           <div className="flex flex-col items-center justify-center min-h-screen gap-[3vh] px-[4vw] py-[3vh]">
             {/* Icon */}
-            <div className="mb-6">
-              <div className="flex justify-center mb-8">
-                <FeedbackIcon isCorrect={isCorrect} size={116} />
+            <div className="mb-2">
+              <div className="flex justify-center mb-4">
+                <FeedbackIcon isCorrect={isCorrect} size={87} />
               </div>
 
               {/* Headline */}
               <div className="text-center">
-                <h2 className="text-5xl font-bold text-[#1D0D52] mb-4">
+                <h2 className="text-xl font-bold text-[#1D0D52] mb-2">
                   {isCorrect
                     ? TEXT.feedback.correct[state.language]
                     : TEXT.feedback.incorrect[state.language]}
@@ -175,7 +175,7 @@ function App() {
 
               {/* Message text */}
               <div className="text-center">
-                <p className="text-white text-3xl">
+                <p className="text-white text-xl">
                   {isCorrect
                     ? TEXT.feedback.correctMessage[state.language]
                     : TEXT.feedback.incorrectMessage[state.language]}
@@ -187,7 +187,7 @@ function App() {
             <div className="h-[8vh] flex items-center justify-center">
               <Button
                 variant="primary"
-                size="large"
+                size="medium"
                 onClick={handleContinueAfterReveal}
               >
                 {TEXT.buttons.next[state.language]}
@@ -238,22 +238,17 @@ function App() {
           selectedCardImage = selectedCard ? selectedCard.backImage : null;
         }
 
-        const canSubmit =
-          state.guess !== null &&
-          state.guess.suit !== null &&
-          state.guess.value !== null;
-
         return (
           <div className="flex flex-col items-center justify-center min-h-screen gap-[3vh] px-[4vw] py-[3vh]">
             {/* Card on left, GuessPicker on right */}
             <div className="flex flex-row items-center justify-center gap-[4vw] flex-wrap">
               {/* Card on left */}
               {selectedCardImage && (
-                <div className="flex flex-col items-center gap-[2vh] mr-[4vw]">
+                <div className="flex flex-col items-center gap-[2vh] mr-6">
                   <img
                     src={selectedCardImage}
                     alt="Selected card"
-                    className="h-[50vh] w-auto object-contain rounded-lg"
+                    className="h-[60vh] w-auto object-contain rounded-lg"
                     style={{
                       filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))",
                     }}
@@ -273,22 +268,11 @@ function App() {
                   onValueChange={(value) =>
                     handleSetGuess(state.guess?.suit || null, value)
                   }
-                  showSubmitButton={false}
+                  showSubmitButton={true}
+                  onSubmit={handleConfirmGuess}
                   markedCard={markedCard}
                 />
               </div>
-            </div>
-
-            {/* Submit button centered below */}
-            <div className="flex justify-center mt-[2vh]">
-              <Button
-                variant="primary"
-                size="large"
-                onClick={handleConfirmGuess}
-                disabled={!canSubmit}
-              >
-                {TEXT.buttons.guessConfirm[state.language]}
-              </Button>
             </div>
           </div>
         );
@@ -322,8 +306,8 @@ function App() {
         return (
           <div className="flex flex-col items-center justify-center min-h-screen gap-[3vh] px-[4vw] py-[3vh]">
             <div className="flex flex-col items-center">
-              <div className="flex flex-col items-center gap-4 mb-4">
-                <FeedbackIcon isCorrect={isCorrect} size={116} />
+              <div className="flex flex-col items-center gap-4">
+                <FeedbackIcon isCorrect={isCorrect} size={56} />
                 <div className="text-center">
                   <h2 className="text-5xl font-bold text-[#1D0D52] mb-8">
                     {isCorrect
@@ -360,7 +344,7 @@ function App() {
               {/* Show user's guess if available */}
               {guessLabel && (
                 <div className="text-center">
-                  <p className="text-white text-3xl">
+                  <p className="text-white text-2xl">
                     {state.language === "de" ? "Deine Vermutung" : "Your guess"}
                     :{" "}
                     {state.language === "de"
@@ -372,7 +356,7 @@ function App() {
             </div>
             <Button
               variant="primary"
-              size="large"
+              size="medium"
               onClick={handleContinueAfterGuessReveal}
             >
               {TEXT.buttons.next[state.language]}

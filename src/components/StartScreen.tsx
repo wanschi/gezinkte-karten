@@ -34,7 +34,7 @@ export function StartScreen({
                 {TEXT.start.title[language]}
               </h1>
               <h2>{TEXT.start.subtitle[language]}</h2>
-              <Button variant="primary" size="large" onClick={onStart}>
+              <Button variant="primary" size="medium" onClick={onStart}>
                 {TEXT.start.cta[language]}
               </Button>
             </div>

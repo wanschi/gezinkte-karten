@@ -27,7 +27,7 @@ export function CompletedScreen({
         </p>
       </div>
 
-      <Button size="large" onClick={onRestart}>
+      <Button size="medium" onClick={onRestart}>
         {TEXT.buttons.restart[language]}
       </Button>
     </div>

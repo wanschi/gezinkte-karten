@@ -43,13 +43,13 @@ export function GuessPicker({
     <>
       <div className="flex flex-col items-start gap-[2vh] relative">
         <div className="text-left">
-          <h2 className="text-4xl font-bold text-[#1D0D52] mb-[1.5vh]">
+          <h2 className="text-4xl font-bold text-[#1D0D52] mb-0">
             {TEXT.prompts.guessInstruction[language]}
           </h2>
         </div>
 
         {/* Suit Selection */}
-        <div className="flex flex-col gap-[1.5vh]">
+        <div className="flex flex-col gap-[1.5vh] mb-2">
           <label className="text-white text-2xl font-medium text-left">
             {TEXT.guess.chooseSuit[language]}
           </label>
@@ -60,7 +60,7 @@ export function GuessPicker({
                 onClick={() =>
                   onSuitChange(selectedSuit === suit.key ? null : suit.key)
                 }
-                className={`px-[2vw] py-[1.5vh] rounded-lg font-medium text-2xl transition-all ${
+                className={`px-4 py-2 rounded-lg font-medium text-xl transition-all ${
                   selectedSuit === suit.key
                     ? "bg-white text-[#1D0D52] scale-105"
                     : "bg-white/20 text-white hover:bg-white/30"
@@ -98,7 +98,7 @@ export function GuessPicker({
                       selectedValue === value.key ? null : value.key,
                     )
                   }
-                  className={`px-7 py-5 rounded-lg font-medium text-2xl transition-all ${
+                  className={`px-4 py-2 rounded-lg font-medium text-xl transition-all ${
                     selectedValue === value.key
                       ? "bg-white text-[#1D0D52] scale-105"
                       : "bg-white/20 text-white hover:bg-white/30"
@@ -115,9 +115,10 @@ export function GuessPicker({
         {showSubmitButton && onSubmit && (
           <Button
             variant="primary"
-            size="large"
+            size="medium"
             onClick={onSubmit}
             disabled={!canSubmit}
+            className="mt-4"
           >
             {TEXT.buttons.guessConfirm[language]}
           </Button>
@@ -128,7 +129,7 @@ export function GuessPicker({
           <div className="fixed bottom-[2vh] right-[2vw] z-10">
             <button
               onClick={() => setShowExplanation(true)}
-              className="px-[2vw] py-[1vh] bg-white/20 text-white rounded-lg font-medium text-2xl hover:bg-white/30 transition-colors"
+              className="px-4 py-[1vh] bg-white/20 text-white rounded-lg font-medium text-xl hover:bg-white/30 transition-colors"
             >
               {TEXT.buttons.explanation[language]}
             </button>

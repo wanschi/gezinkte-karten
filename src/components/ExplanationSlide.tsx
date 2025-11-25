@@ -30,10 +30,10 @@ export function ExplanationSlide({
           {TEXT.prompts.explanationHeading[language]}
         </h2>
       </div>
-      <div className="flex flex-col items-center justify-center">
-        <div className="flex gap-[4vw] items-center justify-center flex-wrap">
-          <div className="flex-1">
-            <div className="flex justify-end">
+      <div className="flex flex-col items-center justify-center mb-3">
+        <div className="flex gap-[4vw] items-center justify-center ">
+          <div className="flex-2">
+            <div>
               {explanationImagePath && (
                 <img
                   src={explanationImagePath}
@@ -46,10 +46,10 @@ export function ExplanationSlide({
               )}
             </div>
           </div>
-          <div className="flex-1 ">
+          <div className="flex-3">
             <p
               className={`text-white leading-relaxed whitespace-pre-line ${
-                inModal ? "text-l" : "text-l"
+                inModal ? "text-[12px]" : "text-[12px]"
               }`}
             >
               {markedCard.explanation[language]}
@@ -59,7 +59,7 @@ export function ExplanationSlide({
       </div>
 
       {!inModal && (
-        <Button variant="primary" size="large" onClick={onContinue}>
+        <Button variant="primary" size="medium" onClick={onContinue}>
           {TEXT.buttons.explanationContinue[language]}
         </Button>
       )}

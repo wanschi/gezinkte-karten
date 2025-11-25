@@ -62,7 +62,7 @@ export function CardGrid({
             <img
               src={imageSrc}
               alt={card.id}
-              className="h-[60vh] w-auto max-w-[35vw] object-contain rounded-xl"
+              className="h-[55vh] w-auto max-w-[35vw] object-contain rounded-xl"
               style={{ filter: "drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))" }}
               onError={(e) => {
                 console.error(`Failed to load image: ${imageSrc}`, e);
