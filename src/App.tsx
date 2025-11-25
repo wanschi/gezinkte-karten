@@ -16,13 +16,23 @@ import {
   getCardsForRound,
   getMarkedCardForRound,
 } from "./gameState";
-import { SUIT_META, VALUE_META } from "./gameData";
+import { SUIT_META, VALUE_META, getAllAssetPaths } from "./gameData";
 import type { SuitKey, ValueKey } from "./gameData";
 import { TEXT } from "./i18n";
 import { isSubRoundA } from "./gameState";
+import { preloadAssets } from "./utils/preloadAssets";
+import cardsImage from "./assets/cards.png";
 
 function App() {
   const [state, dispatch] = useReducer(gameReducer, initialState);
+
+  // Preload all assets on initial page load
+  useEffect(() => {
+    const assetPaths = getAllAssetPaths();
+    // Also preload the start screen image
+    assetPaths.push(cardsImage);
+    preloadAssets(assetPaths);
+  }, []);
 
   // Inactivity timer - reset after 60 seconds
   useEffect(() => {

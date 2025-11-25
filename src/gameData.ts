@@ -548,3 +548,44 @@ export function clearRoundDefinitionsCache(): void {
   cachedRoundDefinitions = null;
 }
 
+/**
+ * Gets all asset paths that should be preloaded.
+ * This includes all possible marked cards (backs and fronts), neutral cards, and explanation images.
+ */
+export function getAllAssetPaths(): string[] {
+  const paths: string[] = [];
+  const decks: DeckId[] = ["deck_1", "deck_2", "deck_3"];
+
+  // Add all marked cards (backs and fronts)
+  decks.forEach((deck) => {
+    const backs = getValidMarkedCardBacks(deck);
+    backs.forEach((back) => {
+      // Add back image
+      paths.push(buildAssetPath(deck, back));
+      // Add corresponding front image
+      paths.push(buildAssetPath(deck, convertBackToFrontFileName(back)));
+    });
+
+    // Add explanation images
+    const explanation = getExplanationImagePath(deck);
+    if (explanation) {
+      paths.push(explanation);
+    }
+  });
+
+  // Add neutral cards (from round definitions)
+  const neutralsByDeck: Record<DeckId, string[]> = {
+    deck_1: ["-rs-I09053Sp-2-2-neutral.png"],
+    deck_2: ["-rs-I05028Sp-2-2-joker.png"],
+    deck_3: ["-rs-I09051Sp-2-2-joker.png"],
+  };
+
+  decks.forEach((deck) => {
+    neutralsByDeck[deck].forEach((neutral) => {
+      paths.push(buildAssetPath(deck, neutral));
+    });
+  });
+
+  return paths;
+}
+
