@@ -167,7 +167,7 @@ function App() {
         const isCorrect = state.selectedCardId === markedCard.id;
 
         return (
-          <div className="flex flex-col items-center justify-center min-h-screen gap-[3vh] px-[4vw] py-[3vh]">
+          <div className="w-full flex flex-col items-center justify-center min-h-screen gap-[3vh] px-[4vw] py-[3vh]">
             {/* Icon */}
             <div className="mb-2">
               <div className="flex justify-center mb-4">
